@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TimeScale
 } from 'chart.js';
 
 import { Line, getDatasetAtEvent } from 'react-chartjs-2'
@@ -20,34 +21,26 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  TimeScale
 );
 
 export default function WeightDisplay() {
   const [weightInput, setWeightInput] = useState("")
-  const [weightData, setWeightData] = useState([3,4,5])
+  const [weightData, setWeightData] = useState([{x: '2016-12-25', y: 20}, {x: '2016-12-26', y: 10}])
   const [weightLabel, setWeightLabel] = useState(['Jun', 'Jul', 'Aug'])
   const chartRef = useRef();
 
 
   const addData = (data) => {
     setWeightLabel(prev => [...prev, "Oct"])
-    setWeightData(prev =>[...prev, data]) 
-    // chart = chart.current;
-    // chart.data.labels.push(label);
-    // chart.data.datasets.forEach((dataset) => {
-    //   dataset.data.push(Math.floor(Math.random() * 100));
-    // });
-    // // chart.data.datasets[0].data.push(Math.floor(Math.random() * 100));
-
-    // chart.update();
-
-    // setWeightInput("")
-    // console.log(chart.data.datasets[0])
+    setWeightData(prev =>[...prev, {x:'2016-01-12', y:data}]) 
+    setWeightInput("")
   }
   return (
     <Box
       component="main"
+      width={"100%"}
     >
       <Toolbar />
       <TextField
@@ -77,20 +70,32 @@ export default function WeightDisplay() {
       >
         Add Weight
       </Button>
+      <Box
+        position={"relative"}
+        margin={"auto"}
+        height={"80vh"}
+        width={"80vw"}
+      >
       <Line
         ref={chartRef}
         datasetIdKey='id'
         data={{
-          labels: weightLabel,
+          // labels: weightLabel,
           datasets: [
             {
               id: 1,
               label: '',
               data: weightData,
+              borderColor: 'rgb(255, 99, 132)',
             }
           ],
         }}
-      />
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+        }}
+        />
+        </Box>
     </Box>
   )
 }

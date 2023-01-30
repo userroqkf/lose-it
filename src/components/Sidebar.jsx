@@ -26,6 +26,7 @@ export default function Sidebar(props) {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
         }}
+        color="inherit"
       >
         <Toolbar
         sx={{
