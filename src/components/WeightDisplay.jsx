@@ -33,17 +33,7 @@ export default function WeightDisplay() {
   const addData = (data) => {
     setWeightLabel(prev => [...prev, "Oct"])
     setWeightData(prev =>[...prev, data]) 
-    // chart = chart.current;
-    // chart.data.labels.push(label);
-    // chart.data.datasets.forEach((dataset) => {
-    //   dataset.data.push(Math.floor(Math.random() * 100));
-    // });
-    // // chart.data.datasets[0].data.push(Math.floor(Math.random() * 100));
-
-    // chart.update();
-
-    // setWeightInput("")
-    // console.log(chart.data.datasets[0])
+    setWeightInput("")
   }
   return (
     <Box
