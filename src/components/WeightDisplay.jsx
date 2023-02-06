@@ -1,4 +1,17 @@
 import { useState, useRef, useEffect } from "react";
+import "chartjs-adapter-moment";
+
+import DeleteCheckBox from "./DeleteCheckBox";
+
+import { DataGrid } from "@mui/x-data-grid";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+import { Line } from "react-chartjs-2";
+
 import {
   TextField,
   InputAdornment,
@@ -7,11 +20,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 
-import DeleteCheckBox from "./DeleteCheckBox";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 
 import {
   Chart as ChartJS,
@@ -24,16 +33,7 @@ import {
   Legend,
   TimeScale,
 } from "chart.js";
-import { Chart } from "react-chartjs-2";
-import "chart.js/auto";
-
-import { Line, getDatasetAtEvent } from "react-chartjs-2";
-import dayjs, { Dayjs } from "dayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import "chartjs-adapter-moment";
-import { CommentsDisabledOutlined } from "@mui/icons-material";
+import dayjs from "dayjs";
 
 ChartJS.register(
   // CategoryScale,
@@ -48,7 +48,7 @@ ChartJS.register(
 
 export default function WeightDisplay() {
   const addDays = function (days) {
-    var date = new Date();
+    const date = new Date();
     date.setDate(date.getDate() + days);
     return date;
   };
@@ -73,6 +73,8 @@ export default function WeightDisplay() {
 
   //Setting Calandar date
   const [value, setValue] = useState(new Date());
+
+  const [dateSelected, setDateSelected] = useState(dayjs(new Date()));
 
   //Setting chart min and max value
   const [xAxis, setXAxis] = useState(() => getFirstLastDayOfMonth(value));
@@ -145,11 +147,11 @@ export default function WeightDisplay() {
     );
   }, [weightData]);
 
-  const chartRef = useRef();
+  useEffect(() => {
+    setValue(dateSelected["$d"])
+  }, [dateSelected])
 
-  //Check MUI Material-UI DatePicker formatting and setting default value issue
-  // https://stackoverflow.com/questions/69725215/mui-material-ui-datepicker-formatting-and-setting-default-value-issue
-  // console.log(xAxis);
+  const chartRef = useRef();
 
   const addData = (data) => {
     const [day, month, year] = weightInputDate.toLocaleDateString().split("/");
@@ -192,7 +194,6 @@ export default function WeightDisplay() {
   };
 
   const chartData = {
-    // labels: weightLabel,
     datasets: [
       {
         data: weightData,
@@ -206,6 +207,24 @@ export default function WeightDisplay() {
     { field: "weight", headerName: "Weight", editable: true, flex: 1 },
   ];
 
+  const changeDate = (e) => {
+    if (e.target.id === "add") {
+      setDateSelected((date) => {
+        console.log(date)
+        const updatedDate = date.add(1, "month")
+        // setValue(updatedDate["$d"])
+        return updatedDate;
+      });
+    } else if (e.target.id === "sub") {
+      setDateSelected((date) => {
+        console.log(date);
+        const updatedDate =  date.add(-1, "month")
+        // setValue(updatedDate["$d"])
+        return updatedDate;
+      });
+    }
+  };
+
   return (
     <Box component="main" width={"100%"}>
       <Toolbar />
@@ -216,8 +235,13 @@ export default function WeightDisplay() {
         justifyContent={"space-around"}
         alignItems={"center"}
       >
-        <IconButton aria-label="delete">
-          <NavigateBeforeIcon />
+        <IconButton>
+          <NavigateBeforeIcon
+            id="sub"
+            onClick={(e) => {
+              changeDate(e)
+            }}
+          />
         </IconButton>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
@@ -225,18 +249,27 @@ export default function WeightDisplay() {
             views={["year", "month"]}
             label="Year and Month"
             minDate={new Date("2012-03-01")}
-            maxDate={new Date("2023-06-01")}
-            value={value}
+            maxDate={new Date()}
+            value={dateSelected}
+            selected={dateSelected}
             onChange={(newValue) => {
-              setValue(newValue["$d"]);
+              // setValue(newValue["$d"]);
+              console.log("new value on change", newValue)
+              setDateSelected(newValue)
+              // setValue(newValue["$d"])
             }}
             renderInput={(params) => (
               <TextField {...params} helperText={null} />
             )}
           />
         </LocalizationProvider>
-        <IconButton aria-label="delete">
-          <NavigateNextIcon />
+        <IconButton>
+          <NavigateNextIcon 
+            id="add"
+            onClick={(e) => {
+              changeDate(e)
+            }}
+          />
         </IconButton>
       </Box>
       <Box
@@ -292,7 +325,6 @@ export default function WeightDisplay() {
       <Box position={"relative"} margin={"auto"} height={"50vh"} width={"80vw"}>
         <Line
           ref={chartRef}
-          // datasetIdKey='id'
           data={chartData}
           options={options}
         />
@@ -304,10 +336,8 @@ export default function WeightDisplay() {
           pageSize={5}
           rowsPerPageOptions={[5]}
           checkboxSelection
-          // disableSelectionOnClick
           experimentalFeatures={{ newEditingApi: true }}
           components={{
-            // Use BaseCheckbox, but make sure your custom Checkbox expects props to match "CheckboxProps" from @mui/material else functionality will be lost.
             BaseCheckbox: DeleteCheckBox,
           }}
           onSelectionModelChange={(data) => {
@@ -320,9 +350,6 @@ export default function WeightDisplay() {
               {
                 display: "none",
               },
-            "& .MuiDataGrid-cellCheckbox": {
-              // visibility: "hidden",
-            },
           }}
         />
       </Box>

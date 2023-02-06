@@ -62,9 +62,6 @@ export default function Sidebar(props) {
           >
             <LetterAvatars name={props.name} />
           </IconButton>
-          {/* <Typography variant="h6" noWrap component="div">
-            Responsive drawer
-          </Typography> */}
         </Toolbar>
       </AppBar>
       <Box
