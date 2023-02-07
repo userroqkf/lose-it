@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "chartjs-adapter-moment";
 
-import DeleteCheckBox from "./DeleteCheckBox";
+import DeleteCheckBox from "../components/DeleteCheckBox";
 
 import { DataGrid } from "@mui/x-data-grid";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -47,6 +47,7 @@ ChartJS.register(
 );
 
 export default function WeightDisplay() {
+  
   const addDays = function (days) {
     const date = new Date();
     date.setDate(date.getDate() + days);

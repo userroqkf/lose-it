@@ -3,9 +3,8 @@ import { Box } from "@mui/material";
 
 import "./App.css";
 
-import WeightDisplay from "./components/WeightDisplay";
+import WeightDisplay from "./WeightDisplay/WeightDisplay";
 import Sidebar from "./components/Sidebar";
-import Chart from "./components/Chart";
 import Dashboard from "./components/Dashboard";
 import FoodDisplay from "./components/FoodDisplay/FoodDisplay";
 
