@@ -7,8 +7,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 
-export default function MacroChart() {
-
+export default function MacroChart(props) {
   const chartRef = useRef();
 
   const dummyData = [700, 300]
@@ -25,8 +24,16 @@ export default function MacroChart() {
     };
 
   const options = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    ticks: {
+      autoSkip: false,
+    },
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
   }
 
   return (
@@ -37,12 +44,14 @@ export default function MacroChart() {
     flexGrow={{ lg: "1" }}
     maxWidth={{ xs: "100%", md: "50%", lg: "100%" }}
     boxSizing="border-box"
+    height={"100%"}
     // position={"relative"} margin={"auto"}
     >
       <Doughnut 
         ref={chartRef}
         data={data}
         options={options}
+        height={"100%"}
       />
     </Box>
   )
