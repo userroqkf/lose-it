@@ -9,13 +9,18 @@ import FoodTable from "./FoodTable";
 
 export default function FoodDisplay(props) {
 
-  const { drawerWidth } = props;
+  const { drawerWidth, value, setValue, datePicker, setDatePicker } = props;
 
-  const [value, setValue] = useState(new Date());
+  // const [value, setValue] = useState(new Date());
 
   return(
     <Box
       component="main"
+      // display={"flex"}
+      // flexDirection={"column"}
+      // alignContent={"center"}
+      // justifyContent={"center"}
+      // alignItems={"center"}
       sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
     > 
       <Toolbar/>
@@ -23,15 +28,29 @@ export default function FoodDisplay(props) {
         display={"flex"}
         flexDirection={"column"}
         alignContent={"center"}
-        justifyContent={"center"}
-        alignItems={"center"}
+        // justifyContent={"center"}
+        // alignItems={"center"}
       >
         <DateSelector 
           value={value}
           setValue={setValue}
+          datePicker={datePicker}
+          setDatePicker={setDatePicker}
         />
         <Box
           display="flex"
+          flexDirection={{xs:"column", sm:"row"}}
+          alignContent={"center"}
+          justifyContent={{xs:"center",sm:"space-around"}}
+          alignItems={"center"}
+          boxSizing="border-box"
+          width={"100%"}
+          // height={"20vh"}
+          // flex={"0 0 1"}
+          // minWidth={"0"}
+          // height={`calc((100% - ${drawerWidth}px)/2)`}
+          // width={`calc(100% - ${drawerWidth}px)`}
+          // padding-top={"100%"}
         >
           {[0,0,0,0].map((value, index) => {
               return (
@@ -39,12 +58,20 @@ export default function FoodDisplay(props) {
               )
           })}
         </Box>
-        <TextField label={"Search Food"} fullWidth margin="dense" />
+        <Box
+          width={"100%"} 
+        >
+          <TextField 
+            label={"Search Food"} 
+            fullWidth
+            margin="dense" 
+          />
+        </Box>
         <Box 
-          position={"relative"} 
+          // position={"relative"} 
           // height temp
           height={"50vh"} 
-          width={"80vw"} 
+          width={"100%"} 
           margin={"auto"}>
           <FoodTable/>
         </Box>

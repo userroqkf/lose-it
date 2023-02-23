@@ -29,29 +29,21 @@ export default function MacroChart(props) {
         display: false,
       },
     },
-    ticks: {
-      autoSkip: false,
-    },
     responsive: true,
     maintainAspectRatio: false,
+    animation: false,
   }
 
   return (
     <Box
-    // key={index}
-    flex={{ xs: "0 0 100%", md: "0 0 50%" }}
-    flexBasis={{ lg: "0" }}
-    flexGrow={{ lg: "1" }}
-    maxWidth={{ xs: "100%", md: "50%", lg: "100%" }}
-    boxSizing="border-box"
-    height={"100%"}
-    // position={"relative"} margin={"auto"}
+    width={{xs: "100%", sm:"calc(100%/5)"}}
+    // height={"100%"}
     >
       <Doughnut 
         ref={chartRef}
         data={data}
         options={options}
-        height={"100%"}
+        // height={"100%"}
       />
     </Box>
   )

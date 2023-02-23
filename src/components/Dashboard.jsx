@@ -5,7 +5,7 @@ import MacroChart from "./FoodDisplay/MacroChart";
 import WeightChart from "./WeightDisplay/WeightChart"
 
 export default function Dashboard(props) {
-  const {value, weightData, setWeightData, fixedData, drawerWidth} = props;
+  const {value, weightData, setWeightData, fixedData, drawerWidth, datePicker, setDatePicker} = props;
   return (
     <Box
       component="main"
@@ -15,19 +15,21 @@ export default function Dashboard(props) {
     >
       {/* <Toolbar /> */}
       <Typography>Hi, Welcome Back</Typography>
-      <DateSelector/>
+      {/* <DateSelector
+        datePicker={datePicker}
+        setDatePicker={setDatePicker}
+      /> */}
       <Box
         display={"flex"}
         flexDirection="column"
       >
         <Box
           display="flex"
-          // flexDirection={{xs:"column", md:"row", lg:"row"}}
           flexWrap="wrap"
           boxSizing="border-box"
           margin-right="-15px"
           margin-left="-15px"
-          height={"30%"}
+          height={"50%"}
         >
           <MacroChart/>
           <MacroChart/>
