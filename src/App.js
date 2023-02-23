@@ -7,7 +7,7 @@ import WeightDisplay from "./components/WeightDisplay/WeightDisplay";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
 import FoodDisplay from "./components/FoodDisplay/FoodDisplay";
-
+import dayjs from "dayjs";
 //Functions needed to created dummy data
 
 const max = 90;
@@ -30,12 +30,13 @@ const values = testingWeightValue.map((int, index) => {
 
 function App() {
   const drawerWidth = 240;
-  const [showPage, SetShowPage] = useState("DASHBOARD");
+  const [showPage, SetShowPage] = useState("FOOD");
   
   const [fixedData, setFixedData] = useState(values);
   const [weightData, setWeightData] = useState(values);
   //Setting Calandar date
   const [value, setValue] = useState(new Date());
+  const [datePicker, setDatePicker] = useState(dayjs(new Date()));
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -47,6 +48,8 @@ function App() {
           weightData={weightData}
           setWeightData={setWeightData}
           fixedData={fixedData}
+          datePicker={datePicker}
+          setDatePicker={setDatePicker}
         />
       }
       {showPage === "WEIGHT" && 
@@ -58,9 +61,20 @@ function App() {
           setWeightData={setWeightData}
           value={value}
           setValue={setValue}
+          datePicker={datePicker}
+          setDatePicker={setDatePicker}
         />
       }
-      {showPage === "FOOD" && <FoodDisplay drawerWidth={drawerWidth} />}
+      {showPage === "FOOD" && 
+        <FoodDisplay 
+          drawerWidth={drawerWidth} 
+          setWeightData={setWeightData}
+          value={value}
+          setValue={setValue}
+          datePicker={datePicker}
+          setDatePicker={setDatePicker}
+        />
+      }
     </Box>
   );
 }

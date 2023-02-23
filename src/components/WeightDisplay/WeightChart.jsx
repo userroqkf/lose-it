@@ -49,6 +49,16 @@ export default function WeightChart(props) {
   }, [value]);
 
 
+// useEffect on xAxis, When Axis range changes, Filter weightInput to the Axis range
+useEffect(() => {
+  setWeightData((prev) =>
+    fixedData.filter((data) => {
+      return xAxis[0] <= data.x && data.x <= xAxis[1];
+    })
+  );
+}, [xAxis, fixedData, weightData, setWeightData]);
+
+
   const chartData = {
     datasets: [
       {
@@ -71,9 +81,10 @@ const options = {
       nax: xAxis[1],
     },
   },
-  ticks: {
-    autoSkip: false,
-  },
+  // animation: false,
+  // ticks: {
+  //   autoSkip: false,
+  // },
   plugins: {
     legend: {
       display: false,
@@ -82,16 +93,6 @@ const options = {
   responsive: true,
   maintainAspectRatio: false,
 };
-
-  // useEffect on xAxis, When Axis range changes, Filter weightInput to the Axis range
-  useEffect(() => {
-    setWeightData((prev) =>
-      fixedData.filter((data) => {
-        return xAxis[0] <= data.x && data.x <= xAxis[1];
-      })
-    );
-  }, [xAxis, fixedData, weightData, setWeightData]);
-
 
 
   return (

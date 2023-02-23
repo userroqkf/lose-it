@@ -51,7 +51,7 @@ export default function FoodTable(props) {
       checkboxSelection
       experimentalFeatures={{ newEditingApi: true }}
       components={{
-        BaseCheckbox: DeleteCheckBox,
+        BaseCheckbox: DeleteCheckBox
       }}
       onSelectionModelChange={(data) => {
         // deleteData(data[0]);

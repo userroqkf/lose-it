@@ -28,10 +28,11 @@ export default function Sidebar(props) {
   return (
     <>
       <AppBar
+      component={"testing"}
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px`},
         }}
         color="inherit"
       >
@@ -39,7 +40,7 @@ export default function Sidebar(props) {
           sx={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: { xs: "space-between", sm: "flex-end" },
+            justifyContent: { xs: "space-between", md: "flex-end" },
             // backgroundColor:"white"
           }}
         >
@@ -48,7 +49,7 @@ export default function Sidebar(props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -66,7 +67,7 @@ export default function Sidebar(props) {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         aria-label="mailbox folders"
       >
         <Drawer
@@ -78,7 +79,7 @@ export default function Sidebar(props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { xs: "block", md: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
@@ -94,7 +95,7 @@ export default function Sidebar(props) {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: "none", sm: "block" },
+            display: { xs: "none", md: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,

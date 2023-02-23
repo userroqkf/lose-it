@@ -6,18 +6,17 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import dayjs from "dayjs";
+
 
 export default function DateSelector(props) {
+  const {datePicker, setDatePicker} = props;
 
-  const [datePicker, setDatePicker] = useState(dayjs(new Date()));
 
-
-  const changeDate = (e) => {
-    if (e.target.id === "add") {
+  const changeDate = (e, value) => {
+    if (value === "add") {
       setDatePicker((date) => date.add(1, "day"));
-    } else if (e.target.id === "sub") {
-      setDatePicker((date) => date.add(1, "day"));
+    } else if (value === "sub") {
+      setDatePicker((date) => date.add(-1, "day"));
     }
   };
 
@@ -30,13 +29,11 @@ export default function DateSelector(props) {
       alignItems={"center"}
     >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <IconButton>
-        <NavigateBeforeIcon
-          id="sub"
-          onClick={(e) => {
-            changeDate(e)
-          }}
-        />
+      <IconButton
+        onClick={(e) => {
+          changeDate(e, "sub")}}
+      >
+        <NavigateBeforeIcon/>
       </IconButton>
 
           <DatePicker
@@ -54,13 +51,12 @@ export default function DateSelector(props) {
             )}
           />
 
-      <IconButton>
-        <NavigateNextIcon
-          id="add"
-          onClick={(e) => {
-            changeDate(e)
-          }}
-        />
+      <IconButton
+        onClick={(e) => {
+          changeDate(e, "add")
+        }}
+      >
+        <NavigateNextIcon/>
       </IconButton>
         </LocalizationProvider>
     </Box>
