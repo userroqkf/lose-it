@@ -30,7 +30,7 @@ const values = testingWeightValue.map((int, index) => {
 
 function App() {
   const drawerWidth = 240;
-  const [showPage, SetShowPage] = useState("FOOD");
+  const [showPage, SetShowPage] = useState("DASHBOARD");
   
   const [fixedData, setFixedData] = useState(values);
   const [weightData, setWeightData] = useState(values);
@@ -49,6 +49,7 @@ function App() {
           setWeightData={setWeightData}
           fixedData={fixedData}
           datePicker={datePicker}
+          setValue={setValue}
           setDatePicker={setDatePicker}
         />
       }
