@@ -26,14 +26,14 @@ export default function WeightMonthSelector(props) {
   }, [dateSelected, setValue])
 
 
-  const changeDate = (e) => {
-    if (e.target.id === "add") {
+  const changeDate = (e, value) => {
+    if (value === "add") {
       setDateSelected((date) => {
         console.log("clicked");
         const updatedDate = date.add(1, "month")
         return updatedDate;
       });
-    } else if (e.target.id === "sub") {
+    } else if (value === "sub") {
       setDateSelected((date) => {
         const updatedDate =  date.add(-1, "month")
         return updatedDate;
@@ -49,12 +49,12 @@ export default function WeightMonthSelector(props) {
         justifyContent={"space-around"}
         alignItems={"center"}
       >
-        <IconButton>
+        <IconButton
+          onClick={(e) => {
+            changeDate(e, "sub")
+          }}
+        >
           <NavigateBeforeIcon
-            id="sub"
-            onClick={(e) => {
-              changeDate(e)
-            }}
           />
         </IconButton>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -77,13 +77,12 @@ export default function WeightMonthSelector(props) {
             )}
           />
         </LocalizationProvider>
-        <IconButton>
-          <NavigateNextIcon 
-            id="add"
-            onClick={(e) => {
-              changeDate(e)
-            }}
-          />
+        <IconButton
+          onClick={(e) => {
+            changeDate(e, "add")
+          }}
+        >
+          <NavigateNextIcon/>
         </IconButton>
       </Box>
   )

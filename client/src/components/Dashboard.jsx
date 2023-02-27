@@ -20,7 +20,7 @@ export default function Dashboard(props) {
       {/* <Toolbar /> */}
       <Typography
         variant="h6"
-        gutterBottom="true"
+        gutterBottom={true}
       >Hi, Welcome Back
       </Typography>
       <DateSelector
