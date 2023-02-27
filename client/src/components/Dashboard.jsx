@@ -3,9 +3,10 @@ import DateSelector from "./FoodDisplay/DateSelector";
 
 import MacroChart from "./FoodDisplay/MacroChart";
 import WeightChart from "./WeightDisplay/WeightChart"
+import WeightMonthSelector from "./WeightDisplay/WeightMonthSelector";
 
 export default function Dashboard(props) {
-  const {value, weightData, setWeightData, fixedData, drawerWidth, datePicker, setDatePicker} = props;
+  const {value, weightData, setWeightData, fixedData, drawerWidth, datePicker, setDatePicker,setValue} = props;
   return (
     <Box
       component="main"
@@ -14,14 +15,21 @@ export default function Dashboard(props) {
       height="90vh"
     >
       {/* <Toolbar /> */}
-      <Typography>Hi, Welcome Back</Typography>
-      {/* <DateSelector
+      <Typography
+        variant="h6"
+        gutterBottom="true"
+      >Hi, Welcome Back
+      </Typography>
+      <DateSelector
         datePicker={datePicker}
         setDatePicker={setDatePicker}
-      /> */}
+      />
       <Box
         display={"flex"}
         flexDirection="column"
+        justifyContent={"center"}
+        alignContent={"center"}
+        paddingTop={"1em"}
       >
         <Box
           display="flex"
@@ -30,6 +38,8 @@ export default function Dashboard(props) {
           margin-right="-15px"
           margin-left="-15px"
           height={"50%"}
+          justifyContent={"space-around"}
+          alignContent={"center"}
         >
           <MacroChart/>
           <MacroChart/>
@@ -41,11 +51,18 @@ export default function Dashboard(props) {
           display="flex"
           flexWrap="wrap"
           boxSizing="border-box"
-          marginRight="-15px"
-          marginLeft="-15px"
+          marginRight="-1em"
+          marginLeft="-1em"
           height={"70%"}
+          justifyContent={"center"}
+          alignContent={"center"}
+          alignItems={"center"}
+          paddingTop={"1em"}
           // backgroundColor="red"
         >
+          <WeightMonthSelector
+            setValue={setValue}
+          />
           <Box
             // flex={{ xs: "0 0 100%", md: "0 0 100%", lg: "0 0 100%" }}
             // maxWidth={{ xs: "100%", md: "100%", lg: "100%" }}

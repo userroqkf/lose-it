@@ -31,6 +31,7 @@ export default function WeightMonthSelector(props) {
   const changeDate = (e) => {
     if (e.target.id === "add") {
       setDateSelected((date) => {
+        console.log("clicked");
         const updatedDate = date.add(1, "month")
         return updatedDate;
       });

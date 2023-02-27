@@ -92,6 +92,7 @@ const options = {
   },
   responsive: true,
   maintainAspectRatio: false,
+  animation: false
 };
 
 

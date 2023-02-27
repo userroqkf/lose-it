@@ -25,6 +25,10 @@ export default function MacroChart(props) {
 
   const options = {
     plugins: {
+      title: {
+        display: true,
+        text: "testing"
+      },
       legend: {
         display: false,
       },
@@ -32,18 +36,19 @@ export default function MacroChart(props) {
     responsive: true,
     maintainAspectRatio: false,
     animation: false,
+    cutout: "60%"
   }
 
   return (
     <Box
     width={{xs: "100%", sm:"calc(100%/5)"}}
-    // height={"100%"}
+    minHeight={"20em"}
     >
       <Doughnut 
         ref={chartRef}
         data={data}
         options={options}
-        // height={"100%"}
+        height={"100%"}
       />
     </Box>
   )

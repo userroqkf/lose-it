@@ -21,6 +21,7 @@ export default function FoodDisplay(props) {
       // alignContent={"center"}
       // justifyContent={"center"}
       // alignItems={"center"}
+      height={"100%"}
       sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
     > 
       <Toolbar/>
@@ -39,13 +40,15 @@ export default function FoodDisplay(props) {
         />
         <Box
           display="flex"
+          // flexWrap={"wrap"}
+          // flex="1 1 auto"
           flexDirection={{xs:"column", sm:"row"}}
           alignContent={"center"}
           justifyContent={{xs:"center",sm:"space-around"}}
           alignItems={"center"}
           boxSizing="border-box"
           width={"100%"}
-          // height={"20vh"}
+          overflow={"hidden"}
           // flex={"0 0 1"}
           // minWidth={"0"}
           // height={`calc((100% - ${drawerWidth}px)/2)`}
