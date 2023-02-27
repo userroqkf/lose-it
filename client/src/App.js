@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 
 import "./App.css";
@@ -20,6 +20,7 @@ Math.floor(Math.random() * (max - min) + min)
 const addDays = function (days) {
   const date = new Date();
   date.setDate(date.getDate() + days);
+  date.setHours(0, 0, 0);
   return date;
 };
 
@@ -27,10 +28,9 @@ const values = testingWeightValue.map((int, index) => {
   return { x: addDays(index), y: int };
 });
 
-
 function App() {
   const drawerWidth = 240;
-  const [showPage, SetShowPage] = useState("DASHBOARD");
+  const [showPage, setShowPage] = useState("DASHBOARD");
   
   const [fixedData, setFixedData] = useState(values);
   const [weightData, setWeightData] = useState(values);
@@ -38,9 +38,24 @@ function App() {
   const [value, setValue] = useState(new Date());
   const [datePicker, setDatePicker] = useState(dayjs(new Date()));
 
+  // Monthly date
+  const [dateSelected, setDateSelected] = useState(dayjs(new Date()));
+
+
+//fetching data from server
+  useEffect(() => {
+    fetch("http://localhost:8000/message")
+      .then(res => res.json())
+      .then(res => console.log(res.message))
+  }, [])
+
   return (
     <Box sx={{ display: "flex" }}>
-      <Sidebar name={"John Kim"} drawerWidth={drawerWidth} />
+      <Sidebar 
+        name={"John Kim"} 
+        drawerWidth={drawerWidth} 
+        setShowPage={setShowPage}
+      />
       {showPage === "DASHBOARD" &&
         <Dashboard 
           drawerWidth={drawerWidth}
@@ -51,6 +66,9 @@ function App() {
           datePicker={datePicker}
           setValue={setValue}
           setDatePicker={setDatePicker}
+          dateSelected={dateSelected}
+          setDateSelected={setDateSelected}
+          setShowPage={setShowPage}
         />
       }
       {showPage === "WEIGHT" && 
@@ -62,8 +80,8 @@ function App() {
           setWeightData={setWeightData}
           value={value}
           setValue={setValue}
-          datePicker={datePicker}
-          setDatePicker={setDatePicker}
+          dateSelected={dateSelected}
+          setDateSelected={setDateSelected}
         />
       }
       {showPage === "FOOD" && 

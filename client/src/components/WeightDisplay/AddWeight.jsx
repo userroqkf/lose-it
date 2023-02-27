@@ -21,20 +21,22 @@ export default function AddWeight(props) {
 
 
     const addData = (data) => {
-    const [day, month, year] = weightInputDate.toLocaleDateString().split("/");
-    const selectedInputDate = new Date(year, month - 1, day);
-    setWeightData((prev) =>
-      [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
-        return new Date(b.x) - new Date(a.x);
-      })
-    );
-    setFixedData((prev) =>
-      [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
-        return new Date(b.x) - new Date(a.x);
-      })
-    );
-    setWeightInput("");
-  };
+      const [day, month, year] = weightInputDate.toLocaleDateString().split("/");
+      const selectedInputDate = new Date(year, month - 1, day);
+      selectedInputDate.setHours(0, 0, 0);
+      setWeightData((prev) =>
+        [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
+          console.log(prev)
+          return new Date(b.x) - new Date(a.x);
+        })
+      );
+      setFixedData((prev) =>
+        [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
+          return new Date(b.x) - new Date(a.x);
+        })
+      );
+      setWeightInput("");
+    };
   
 
   return (

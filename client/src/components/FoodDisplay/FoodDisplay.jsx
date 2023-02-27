@@ -65,7 +65,7 @@ export default function FoodDisplay(props) {
           width={"100%"} 
         >
           <TextField 
-            label={"Search Food"} 
+            label={"Add Food"} 
             fullWidth
             margin="dense" 
           />
