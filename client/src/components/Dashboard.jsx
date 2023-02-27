@@ -6,10 +6,13 @@ import WeightChart from "./WeightDisplay/WeightChart"
 import WeightMonthSelector from "./WeightDisplay/WeightMonthSelector";
 
 export default function Dashboard(props) {
-  const {value, weightData, setWeightData, fixedData, drawerWidth, datePicker, setDatePicker,setValue} = props;
+  const {value, weightData, setWeightData, fixedData, drawerWidth, datePicker, 
+    setDatePicker,setValue, dateSelected, setDateSelected, setShowPage} = props;
   return (
     <Box
       component="main"
+      //added border box
+      box-sizing={"border-box"}
       sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       marginTop="60px"
       height="90vh"
@@ -40,6 +43,9 @@ export default function Dashboard(props) {
           height={"50%"}
           justifyContent={"space-around"}
           alignContent={"center"}
+          onClick={() => {
+            setShowPage("FOOD")
+          }}
         >
           <MacroChart/>
           <MacroChart/>
@@ -53,7 +59,7 @@ export default function Dashboard(props) {
           boxSizing="border-box"
           marginRight="-1em"
           marginLeft="-1em"
-          height={"70%"}
+          // height={"70%"}
           justifyContent={"center"}
           alignContent={"center"}
           alignItems={"center"}
@@ -62,6 +68,8 @@ export default function Dashboard(props) {
         >
           <WeightMonthSelector
             setValue={setValue}
+            dateSelected={dateSelected}
+            setDateSelected={setDateSelected}
           />
           <Box
             // flex={{ xs: "0 0 100%", md: "0 0 100%", lg: "0 0 100%" }}
@@ -70,6 +78,9 @@ export default function Dashboard(props) {
             paddingLeft={"15px"}
             paddingRight={"15px"}
             marginBottom="1.5rem"
+            onClick={() => {
+              setShowPage("WEIGHT")
+            }}
           >
             <WeightChart
               value={value}

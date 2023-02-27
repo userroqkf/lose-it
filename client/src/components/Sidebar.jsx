@@ -18,7 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { flexbox } from "@mui/system";
 
 export default function Sidebar(props) {
-  const { drawerWidth } = props;
+  const { drawerWidth, setShowPage } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -90,7 +90,10 @@ export default function Sidebar(props) {
             <LetterAvatars name={props.name} />
             <Typography>{props.name}</Typography>
           </Button>
-          <SidebarItem />
+          <SidebarItem 
+            setShowPage={setShowPage}
+          />
+          <Button>Logout</Button>
         </Drawer>
         <Drawer
           variant="permanent"
@@ -101,6 +104,7 @@ export default function Sidebar(props) {
               width: drawerWidth,
               display: "flex",
               flexDirection: "column",
+              //need to change in order to follow the design principle given
               justifyContent: "space-between",
             },
           }}
@@ -111,7 +115,9 @@ export default function Sidebar(props) {
               <LetterAvatars name={props.name} />
               <Typography>{props.name}</Typography>
             </Button>
-            <SidebarItem />
+            <SidebarItem 
+              setShowPage={setShowPage}
+            />
           </Box>
           <Button>Logout</Button>
         </Drawer>

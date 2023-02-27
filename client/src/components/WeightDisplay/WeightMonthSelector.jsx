@@ -19,9 +19,7 @@ import dayjs from "dayjs";
 
 export default function WeightMonthSelector(props) {
 
-  const {setValue} = props;
-
-  const [dateSelected, setDateSelected] = useState(dayjs(new Date()));
+  const {setValue, dateSelected, setDateSelected} = props;
 
   useEffect(() => {
     setValue(dateSelected["$d"])

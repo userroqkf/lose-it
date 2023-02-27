@@ -25,10 +25,6 @@ export default function MacroChart(props) {
 
   const options = {
     plugins: {
-      title: {
-        display: true,
-        text: "testing"
-      },
       legend: {
         display: false,
       },
@@ -36,8 +32,28 @@ export default function MacroChart(props) {
     responsive: true,
     maintainAspectRatio: false,
     animation: false,
-    cutout: "60%"
+    cutout: "65%"
   }
+
+  const test = "300kcal"
+  const plugins = [{
+    afterDraw: function(chart) {
+    const width = chart.width,
+        height = chart.height,
+        ctx = chart.ctx;
+        ctx.save();
+        const fontSize = (height/350);
+        ctx.font = `bold ${fontSize}em Helvetica Neue`;
+        // ctx.textBaseline = "top";
+        const text = `Remaining:`;
+        const text2 = ` ${test}`
+        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+        const textY = height / 2;
+        ctx.fillText(text, textX, textY);
+        ctx.fillText(text2, textX, textY + 20);
+        ctx.restore();
+    } 
+  }]
 
   return (
     <Box
@@ -49,6 +65,7 @@ export default function MacroChart(props) {
         data={data}
         options={options}
         height={"100%"}
+        plugins={plugins}
       />
     </Box>
   )
