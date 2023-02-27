@@ -28,7 +28,6 @@ export default function Sidebar(props) {
   return (
     <>
       <AppBar
-      component={"testing"}
         position="fixed"
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },

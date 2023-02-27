@@ -14,17 +14,23 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 
 export default function AddWeight(props) {
-  const { setWeightData, setFixedData } = props;
+  const { setWeightData, setFixedData, weightData } = props;
 
   const [weightInput, setWeightInput] = useState("");
   const [weightInputDate, setWeightInputDate] = useState(new Date());
-
+  const [weightExists, setWeightExists] = useState(false);
 
     const addData = (data) => {
       const [day, month, year] = weightInputDate.toLocaleDateString().split("/");
       const selectedInputDate = new Date(year, month - 1, day);
       selectedInputDate.setHours(0, 0, 0);
-      setWeightData((prev) =>
+      const found =  weightData.some(data =>
+        data.x.getDate() === selectedInputDate.getDate() && 
+        data.x.getDay() === selectedInputDate.getDay() &&
+        data.x.getFullYear() === selectedInputDate.getFullYear()
+        )
+      if (!found) {
+        setWeightData((prev) =>
         [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
           console.log(prev)
           return new Date(b.x) - new Date(a.x);
@@ -36,7 +42,11 @@ export default function AddWeight(props) {
         })
       );
       setWeightInput("");
-    };
+      } else {
+        setWeightExists(true)
+      }
+    }
+    ;
   
 
   return (
@@ -45,7 +55,7 @@ export default function AddWeight(props) {
         flexDirection={"columns"}
         alignContent={"center"}
         justifyContent={"center"}
-        alignItems={"center"}
+        alignItems={"baseline"}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
@@ -54,7 +64,6 @@ export default function AddWeight(props) {
             label="Date"
             value={weightInputDate}
             onChange={(newValue) => {
-              console.log(newValue);
               setWeightInputDate(newValue["$d"]);
             }}
             renderInput={(params) => (
@@ -63,6 +72,9 @@ export default function AddWeight(props) {
           />
         </LocalizationProvider>
         <TextField
+        // handle error
+          error={weightExists}
+          helperText={weightExists ? 'Weight already given for this date' : ' '}
           label="Weight"
           id="outlined-start-adornment"
           sx={{ m: 1, width: "25ch" }}
@@ -75,6 +87,9 @@ export default function AddWeight(props) {
           onChange={(e) => {
             e.preventDefault();
             setWeightInput(e.target.value);
+            if (e.target.value === "") {
+              setWeightExists(false)
+            }
           }}
         />
         <Button
