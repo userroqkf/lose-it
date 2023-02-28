@@ -41,14 +41,6 @@ function App() {
   // Monthly date
   const [dateSelected, setDateSelected] = useState(dayjs(new Date()));
 
-
-//fetching data from server
-  useEffect(() => {
-    fetch("http://localhost:8000/message")
-      .then(res => res.json())
-      .then(res => console.log(res.message))
-  }, [])
-
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar 

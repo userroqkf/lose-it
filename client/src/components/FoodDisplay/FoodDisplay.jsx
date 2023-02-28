@@ -6,12 +6,71 @@ import { Box, Toolbar, FormControl, InputLabel, Input, InputAdornment, TextField
 import MacroChart from "./MacroChart";
 import DateSelector from "./DateSelector";
 import FoodTable from "./FoodTable";
+import QueryTable from "./QueryTable";
+
+
+// const searchFoodData = (food) => {
+//   fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?api_key=DEMO_KEY&query=${food}`)
+//   .then(res => res.json())
+//   .then(res => console.log(res.foods))
+// }
+function useDebounceValue(value, time=1000) {
+  const [debounceValue, setDebounceValue] = useState(value);
+  
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebounceValue(value);
+    }, time)
+
+    return () => {
+      clearTimeout(timeout);
+    }
+  }, [value, time]);
+
+  return debounceValue;
+} 
+
+function fetchFoodData (query) {
+  //not good practice to store api key
+  // const API_KEY = fetch("/api_key").then(res => console.log(res.body));
+  return fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${API_KEY}&query=${query}`)
+    .then(res =>{
+      if (res.ok) {
+        return res.json();
+      }
+      throw new Error('Something went wrong');
+    })
+    .then(res => res.foods)
+    .catch(error => console.log(error));
+}
 
 export default function FoodDisplay(props) {
 
   const { drawerWidth, value, setValue, datePicker, setDatePicker } = props;
 
-  // const [value, setValue] = useState(new Date());
+  const [ queryFood, setQueryFood ] = useState("");
+  const [queryFoodData, setQueryFoodData] = useState({})
+  const [showQueryData, setShowQueryData] = useState(false);
+  const debounceQuery = useDebounceValue(queryFood);
+  //fetching data from server
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      if (debounceQuery.length > 0) {
+        console.log(debounceQuery)
+        const data = await fetchFoodData(debounceQuery);
+        if (!ignore) {
+          console.log("data fetched",data);
+          setQueryFoodData(data);
+          setShowQueryData(true);
+        }
+      }
+    })();
+    return () => {
+      ignore= true;
+      setShowQueryData(false);
+    }
+  }, [debounceQuery])
 
   return(
     <Box
@@ -65,9 +124,14 @@ export default function FoodDisplay(props) {
           width={"100%"} 
         >
           <TextField 
-            label={"Add Food"} 
+            label={queryFood === "" ? "Search Food" : "Press Enter To Search"} 
             fullWidth
-            margin="dense" 
+            margin="dense"
+            value={queryFood}
+            onChange={(e) => {
+              e.preventDefault();
+              setQueryFood(e.target.value)
+            }}
           />
         </Box>
         <Box 
@@ -75,8 +139,9 @@ export default function FoodDisplay(props) {
           // height temp
           height={"50vh"} 
           width={"100%"} 
-          margin={"auto"}>
-          <FoodTable/>
+          margin={"auto"}
+        >
+          {showQueryData ? <QueryTable queryFoodData={showQueryData ? queryFoodData : {}}/> : <FoodTable/>}
         </Box>
       </Box>
     </Box>
