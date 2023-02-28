@@ -9,7 +9,7 @@ export default function FoodTable(props) {
 
   const gridData = [
     {
-      id : Math.floor(Math.random()*100),
+      id : 1,
       date: new Date().toLocaleDateString(),
       carb: 200,
       protein: 100,
@@ -17,7 +17,7 @@ export default function FoodTable(props) {
       calories: 600
     },
     {
-      id : Math.floor(Math.random()*100),
+      id : 2,
       date: new Date().toLocaleDateString(),
       carb: 100,
       protein:200,
@@ -25,7 +25,7 @@ export default function FoodTable(props) {
       calories: 350
     },
     {
-      id : Math.floor(Math.random()*100),
+      id : 3,
       date: new Date().toLocaleDateString(),
       carb: 200,
       protein:400,

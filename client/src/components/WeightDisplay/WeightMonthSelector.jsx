@@ -15,8 +15,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import dayjs from "dayjs";
 
-
-
 export default function WeightMonthSelector(props) {
 
   const {setValue, dateSelected, setDateSelected} = props;
