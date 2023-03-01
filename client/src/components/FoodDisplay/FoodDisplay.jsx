@@ -30,19 +30,7 @@ function useDebounceValue(value, time=1000) {
   return debounceValue;
 } 
 
-function fetchFoodData (query) {
-  //not good practice to store api key
-  // const API_KEY = fetch("/api_key").then(res => console.log(res.body));
-  return fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${API_KEY}&query=${query}`)
-    .then(res =>{
-      if (res.ok) {
-        return res.json();
-      }
-      throw new Error('Something went wrong');
-    })
-    .then(res => res.foods)
-    .catch(error => console.log(error));
-}
+
 
 export default function FoodDisplay(props) {
 
@@ -51,16 +39,23 @@ export default function FoodDisplay(props) {
   const [ queryFood, setQueryFood ] = useState("");
   const [queryFoodData, setQueryFoodData] = useState({})
   const [showQueryData, setShowQueryData] = useState(false);
+  // const [queryData, setQueryData] = useState({})
   const debounceQuery = useDebounceValue(queryFood);
+
+  function fetchFoodData (query) {
+    return fetch(`http://localhost:8000/api_key?food=${query}`)
+    .then(res => res.json())
+    .then(data => data.foods)
+  }
+
   //fetching data from server
   useEffect(() => {
     let ignore = false;
     (async () => {
       if (debounceQuery.length > 0) {
-        console.log(debounceQuery)
         const data = await fetchFoodData(debounceQuery);
         if (!ignore) {
-          console.log("data fetched",data);
+          console.log(data);
           setQueryFoodData(data);
           setShowQueryData(true);
         }
