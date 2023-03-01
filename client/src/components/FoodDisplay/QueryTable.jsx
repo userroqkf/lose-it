@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
 import DeleteCheckBox from "../DeleteCheckBox";
@@ -7,30 +7,56 @@ export default function QueryTable(props) {
 
   const { queryFoodData} = props;
 
-  console.log("props table",queryFoodData);
-
   const [selectionModel, setSelectionModel] = useState([]);
 
-  const gridData = [];
+  const [gridData, setGridData] = useState([]);
 
-  queryFoodData.forEach((value, index) => {
-    console.log(
-      value["foodNutrients"][0]["value"],
-      value["foodNutrients"][1]["value"],
-      value["foodNutrients"][2]["value"],
-      value["foodNutrients"][3]["value"]
-    )
-    const foodDataCleaned = {
-      id: value["fdcId"],
-      brand: value["brandName"],
-      food: value["description"],
-      protein: value["foodNutrients"][0]["value"],
-      fat: value["foodNutrients"][1]["value"],
-      carb: value["foodNutrients"][2]["value"],
-      calories: value["foodNutrients"][3]["value"]
-    }
-    gridData.push(foodDataCleaned);
-  })
+  function cleanQueryFoodData(foodData) {
+    const foodDataCleaned = [];
+    foodData.forEach((value, index) => {
+        const newFood = {
+          id : value["fdcId"],
+          brand: "",
+          food: "",
+          protein: "",
+          fat: "",
+          carb: "",
+          caloires: ""
+        }
+
+        if (value["foodNutrients"]) {
+        
+          newFood["brand"] = value["brandName"]
+          newFood["food"] = value["description"]
+
+          value["foodNutrients"].forEach((nutrient, index) => {
+            if (nutrient["nutrientId"] === 1003) {
+              newFood["protein"] = nutrient["value"]
+            }
+            if (nutrient["nutrientId"] === 1004) {
+              newFood["fat"] = nutrient["value"]
+            }
+            if (nutrient["nutrientId"] === 1005) {
+              newFood["carb"] = nutrient["value"]
+            }
+            if (nutrient["nutrientId"] === 1008) {
+              newFood["calories"] = nutrient["value"]
+            }
+            foodDataCleaned.push(newFood)
+          })
+        }
+      })
+      return foodDataCleaned
+  }
+  
+
+  useEffect(() => {
+    const data = cleanQueryFoodData(queryFoodData);
+    console.log(data)
+    setGridData(data);
+  }, [queryFoodData])
+
+  
 
 
   const columns = [
