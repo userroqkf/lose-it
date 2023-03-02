@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "chartjs-adapter-moment";
 
-import { Box, Toolbar, FormControl, InputLabel, Input, InputAdornment, TextField } from "@mui/material";
+import { Box, Toolbar, FormControl, InputLabel, Input, InputAdornment, TextField, Snackbar } from "@mui/material";
 
 import MacroChart from "./MacroChart";
 import DateSelector from "./DateSelector";
@@ -30,6 +30,35 @@ function useDebounceValue(value, time=1000) {
   return debounceValue;
 } 
 
+const gridData = [
+  {
+    id : 1,
+    brand: "no brand",
+    food: "no food",
+    carb: 200,
+    protein: 100,
+    fat: 200,
+    calories: 600
+  },
+  {
+    id : 2,
+    brand: "no brand",
+    food: "no food",
+    carb: 100,
+    protein:200,
+    fat: 150,
+    calories: 350
+  },
+  {
+    id : 3,
+    brand: "no brand",
+    food: "no food",
+    carb: 200,
+    protein:400,
+    fat: 750,
+    calories: 1050
+  }
+]
 
 
 export default function FoodDisplay(props) {
@@ -39,6 +68,10 @@ export default function FoodDisplay(props) {
   const [ queryFood, setQueryFood ] = useState("");
   const [queryFoodData, setQueryFoodData] = useState({})
   const [showQueryData, setShowQueryData] = useState(false);
+
+  //later want to get data from db and pass as props
+  const [tempTestingData, setTempTestingData] = useState(gridData)
+
   // const [queryData, setQueryData] = useState({})
   const debounceQuery = useDebounceValue(queryFood);
 
@@ -67,6 +100,11 @@ export default function FoodDisplay(props) {
     }
   }, [debounceQuery])
 
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
+
   return(
     <Box
       component="main"
@@ -79,6 +117,12 @@ export default function FoodDisplay(props) {
       sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
     > 
       <Toolbar/>
+      <Snackbar
+        anchorOrigin={"bottom left"}
+        open={"open"}
+        onClose={handleClose}
+        message="I love snacks"
+      />
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -136,7 +180,17 @@ export default function FoodDisplay(props) {
           width={"100%"} 
           margin={"auto"}
         >
-          {showQueryData ? <QueryTable queryFoodData={showQueryData ? queryFoodData : {}}/> : <FoodTable/>}
+          {showQueryData ? 
+            <QueryTable 
+            queryFoodData={showQueryData ? queryFoodData : {}}
+            tempTestingData={tempTestingData}
+            setTempTestingData={setTempTestingData}
+            /> : 
+            <FoodTable
+              tempTestingData={tempTestingData}
+              setTempTestingData={setTempTestingData}
+            />
+          }
         </Box>
       </Box>
     </Box>

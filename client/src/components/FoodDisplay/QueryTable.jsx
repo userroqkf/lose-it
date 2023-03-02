@@ -1,17 +1,21 @@
-import { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { useState, useEffect, useCallback } from "react";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
-import DeleteCheckBox from "../DeleteCheckBox";
+import AddIcon from '@mui/icons-material/Add';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button } from "@mui/material";
 
 export default function QueryTable(props) {
 
-  const { queryFoodData} = props;
+  const { queryFoodData, tempTestingData, setTempTestingData} = props;
 
   const [selectionModel, setSelectionModel] = useState([]);
 
   const [gridData, setGridData] = useState([]);
 
   function cleanQueryFoodData(foodData) {
+    setGridData([])
     const foodDataCleaned = [];
     foodData.forEach((value, index) => {
         const newFood = {
@@ -28,7 +32,7 @@ export default function QueryTable(props) {
         
           newFood["brand"] = value["brandName"]
           newFood["food"] = value["description"]
-
+          // error coming from here where forEach Loop
           value["foodNutrients"].forEach((nutrient, index) => {
             if (nutrient["nutrientId"] === 1003) {
               newFood["protein"] = nutrient["value"]
@@ -42,8 +46,8 @@ export default function QueryTable(props) {
             if (nutrient["nutrientId"] === 1008) {
               newFood["calories"] = nutrient["value"]
             }
-            foodDataCleaned.push(newFood)
           })
+          foodDataCleaned.push(newFood)
         }
       })
       return foodDataCleaned
@@ -51,12 +55,26 @@ export default function QueryTable(props) {
   
 
   useEffect(() => {
+    console.log("queryfooddata")
     const data = cleanQueryFoodData(queryFoodData);
     console.log(data)
     setGridData(data);
   }, [queryFoodData])
 
   
+  const addItem = useCallback(
+    (id) => {
+      setTimeout(() => {
+        const addItemData = gridData.filter((row) => {
+          console.log(row, row.id, id, row.id === id)
+          return row.id === id
+        });
+        setTempTestingData(prev => [...prev, addItemData[0]])
+        //need to set to food data not the querydata
+      });
+    },
+    [gridData, setTempTestingData],
+  );
 
 
   const columns = [
@@ -66,6 +84,21 @@ export default function QueryTable(props) {
     { field: "protein", headerName: "Protein", flex: 1 },
     { field: "fat", headerName: "Fat", flex: 1 },
     { field: "calories", headerName: "Calories", flex: 1 },
+    {
+      field: 'actions',
+      type: 'actions',
+      width: 80,
+      headerName: "Add Item",
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<AddIcon />}
+          label="Add Item"
+          onClick={() => {
+            addItem(params.id)
+          }}
+        />,
+      ],
+    },
   ]
 
   return (
@@ -73,22 +106,8 @@ export default function QueryTable(props) {
       rows={gridData}
       columns={columns}
       pageSize={100}
-      // rowsPerPageOptions={[25, 50, 100]}
-      checkboxSelection
-      experimentalFeatures={{ newEditingApi: true }}
-      // components={{
-      //   BaseCheckbox: DeleteCheckBox
-      // }}
-      // onSelectionModelChange={(data) => {
-      //   // deleteData(data[0]);
-      // }}
-      selectionModel={selectionModel}
-      // sx={{
-      //   "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer":
-      //     {
-      //       display: "none",
-      //     },
-      // }}
+      getRowId={(row) => row.id}
+
     />
   )
 }
