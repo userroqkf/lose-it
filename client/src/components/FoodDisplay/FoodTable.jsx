@@ -7,7 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function FoodTable(props) {
 
-  const {tempTestingData, setTempTestingData} = props;
+  const {tempTestingData, setTempTestingData, showAlert, setShowAlert} = props;
 
   const [selectionModel, setSelectionModel] = useState([]);
 
@@ -37,6 +37,7 @@ export default function FoodTable(props) {
     (id) => {
       setTimeout(() => {
         setTempTestingData((prevRows) => prevRows.filter((row) => row.id !== id));
+        setShowAlert((prev) => { return {...prev, message:"Deleted Item", open: true}})
       });
     },
     [],

@@ -69,6 +69,9 @@ export default function FoodDisplay(props) {
   const [queryFoodData, setQueryFoodData] = useState({})
   const [showQueryData, setShowQueryData] = useState(false);
 
+  //alert (snackbar) to show that user has either deleted or added new item
+  const [showAlert, setShowAlert] = useState({message:"", open: false});
+
   //later want to get data from db and pass as props
   const [tempTestingData, setTempTestingData] = useState(gridData)
 
@@ -100,8 +103,10 @@ export default function FoodDisplay(props) {
     }
   }, [debounceQuery])
 
+
+  //handle open and close for alerts
   const handleClose = () => {
-    setState({ ...state, open: false });
+    setShowAlert({ ...showAlert, open: false });
   };
 
 
@@ -117,11 +122,13 @@ export default function FoodDisplay(props) {
       sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
     > 
       <Toolbar/>
+
       <Snackbar
-        anchorOrigin={"bottom left"}
-        open={"open"}
+        anchorOrigin={{vertical:"bottom", horizontal: "left"}}
+        open={showAlert.open}
         onClose={handleClose}
-        message="I love snacks"
+        autoHideDuration={500}
+        message={showAlert.message}
       />
       <Box
         display={"flex"}
@@ -185,10 +192,14 @@ export default function FoodDisplay(props) {
             queryFoodData={showQueryData ? queryFoodData : {}}
             tempTestingData={tempTestingData}
             setTempTestingData={setTempTestingData}
+            showAlert={showAlert}
+            setShowAlert={setShowAlert}
             /> : 
             <FoodTable
               tempTestingData={tempTestingData}
               setTempTestingData={setTempTestingData}
+              showAlert={showAlert}
+              setShowAlert={setShowAlert}
             />
           }
         </Box>

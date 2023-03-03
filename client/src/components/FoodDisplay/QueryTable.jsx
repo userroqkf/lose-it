@@ -8,7 +8,7 @@ import { Button } from "@mui/material";
 
 export default function QueryTable(props) {
 
-  const { queryFoodData, tempTestingData, setTempTestingData} = props;
+  const { queryFoodData, tempTestingData, setTempTestingData, showAlert, setShowAlert} = props;
 
   const [selectionModel, setSelectionModel] = useState([]);
 
@@ -70,10 +70,10 @@ export default function QueryTable(props) {
           return row.id === id
         });
         setTempTestingData(prev => [...prev, addItemData[0]])
-        //need to set to food data not the querydata
+        setShowAlert((prev) => { return {...prev, message:"Added Item", open: true}})
       });
     },
-    [gridData, setTempTestingData],
+    [gridData, setTempTestingData, setShowAlert],
   );
 
 
