@@ -7,9 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function FoodTable(props) {
 
-  const {tempTestingData, setTempTestingData, showAlert, setShowAlert} = props;
-
-  const [selectionModel, setSelectionModel] = useState([]);
+  const {tempTestingData, setFoodMacro,foodMacro, showAlert, setShowAlert,foodMacroSum, setFoodMacroSum} = props;
 
 
   const columns = [
@@ -36,11 +34,14 @@ export default function FoodTable(props) {
   const deleteUser = useCallback(
     (id) => {
       setTimeout(() => {
-        setTempTestingData((prevRows) => prevRows.filter((row) => row.id !== id));
+        setFoodMacro((prevRows) => prevRows.filter((row) => row.id !== id));
         setShowAlert((prev) => { return {...prev, message:"Deleted Item", open: true}})
+        setFoodMacroSum(foodMacro)
+        // console.log("macro",foodMacro)
+        // console.log("macro sum",foodMacroSum)
       });
     },
-    [],
+    [setFoodMacro, setShowAlert,setFoodMacroSum, foodMacro],
   );
 
 

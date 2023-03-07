@@ -30,40 +30,9 @@ function useDebounceValue(value, time=1000) {
   return debounceValue;
 } 
 
-const gridData = [
-  {
-    id : 1,
-    brand: "no brand",
-    food: "no food",
-    carb: 200,
-    protein: 100,
-    fat: 200,
-    calories: 600
-  },
-  {
-    id : 2,
-    brand: "no brand",
-    food: "no food",
-    carb: 100,
-    protein:200,
-    fat: 150,
-    calories: 350
-  },
-  {
-    id : 3,
-    brand: "no brand",
-    food: "no food",
-    carb: 200,
-    protein:400,
-    fat: 750,
-    calories: 1050
-  }
-]
-
-
 export default function FoodDisplay(props) {
 
-  const { drawerWidth, value, setValue, datePicker, setDatePicker } = props;
+  const { drawerWidth, value, setValue, datePicker, setDatePicker, macroData, setMacroData, foodMacroSum, foodMacro, setFoodMacro, setFoodMacroSu, remainingMacro, setRemainingMacro, setFoodMacroSum } = props;
 
   const [ queryFood, setQueryFood ] = useState("");
   const [queryFoodData, setQueryFoodData] = useState({})
@@ -73,7 +42,7 @@ export default function FoodDisplay(props) {
   const [showAlert, setShowAlert] = useState({message:"", open: false});
 
   //later want to get data from db and pass as props
-  const [tempTestingData, setTempTestingData] = useState(gridData)
+  // const [tempTestingData, setTempTestingData] = useState(gridData)
 
   // const [queryData, setQueryData] = useState({})
   const debounceQuery = useDebounceValue(queryFood);
@@ -90,6 +59,7 @@ export default function FoodDisplay(props) {
     (async () => {
       if (debounceQuery.length > 0) {
         const data = await fetchFoodData(debounceQuery);
+        console.log(data)
         if (!ignore) {
           console.log(data);
           setQueryFoodData(data);
@@ -160,9 +130,16 @@ export default function FoodDisplay(props) {
           // width={`calc(100% - ${drawerWidth}px)`}
           // padding-top={"100%"}
         >
-          {[0,0,0,0].map((value, index) => {
+          {["Protein", "Fat", "Carb", "Calories"].map((value, index) => {
               return (
-                  <MacroChart key={index} />
+                  <MacroChart 
+                    key={index} 
+                    macroName={value.toLowerCase()} 
+                    macroData={macroData} 
+                    setMacroData={setMacroData} 
+                    foodMacroSum={foodMacroSum} 
+                    remainingMacro={remainingMacro}  
+                  />
               )
           })}
         </Box>
@@ -190,16 +167,21 @@ export default function FoodDisplay(props) {
           {showQueryData ? 
             <QueryTable 
             queryFoodData={showQueryData ? queryFoodData : {}}
-            tempTestingData={tempTestingData}
-            setTempTestingData={setTempTestingData}
+            tempTestingData={foodMacro}
+            setFoodMacro={setFoodMacro}
             showAlert={showAlert}
             setShowAlert={setShowAlert}
+            setFoodMacroSum={setFoodMacroSum}
+            foodMacro={foodMacro}
             /> : 
             <FoodTable
-              tempTestingData={tempTestingData}
-              setTempTestingData={setTempTestingData}
+              tempTestingData={foodMacro}
+              setFoodMacro={setFoodMacro}
               showAlert={showAlert}
               setShowAlert={setShowAlert}
+              foodMacroSum={foodMacroSum}
+              setFoodMacroSum={setFoodMacroSum}
+              foodMacro={foodMacro}
             />
           }
         </Box>

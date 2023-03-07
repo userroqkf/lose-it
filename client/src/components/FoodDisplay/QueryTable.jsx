@@ -8,7 +8,7 @@ import { Button } from "@mui/material";
 
 export default function QueryTable(props) {
 
-  const { queryFoodData, tempTestingData, setTempTestingData, showAlert, setShowAlert} = props;
+  const { queryFoodData, tempTestingData, setFoodMacro, foodMacro, showAlert, setShowAlert, setFoodMacroSum} = props;
 
   const [selectionModel, setSelectionModel] = useState([]);
 
@@ -69,11 +69,16 @@ export default function QueryTable(props) {
           console.log(row, row.id, id, row.id === id)
           return row.id === id
         });
-        setTempTestingData(prev => [...prev, addItemData[0]])
-        setShowAlert((prev) => { return {...prev, message:"Added Item", open: true}})
+        if (!foodMacro.some(obj => obj.id === id)) {
+          setFoodMacro(prev => [...prev, addItemData[0]])
+          setShowAlert((prev) => { return {...prev, message:"Added Item", open: true}})
+          setFoodMacroSum(foodMacro)
+        } else {
+          setShowAlert((prev) => { return {...prev, message:"Item Already Exists", open: true}})
+        }
       });
     },
-    [gridData, setTempTestingData, setShowAlert],
+    [gridData, setFoodMacro, setShowAlert, foodMacro, setFoodMacroSum],
   );
 
 
