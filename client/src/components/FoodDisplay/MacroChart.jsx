@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
 import {Box} from "@mui/material"
@@ -8,16 +8,23 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 
 export default function MacroChart(props) {
-  const chartRef = useRef();
 
-  const dummyData = [700, 300]
+// how to clean props {protien , , , } 
+// if that is the case have state for both remaining and consumed
+
+  const { macroName, macroData, setMacroData, foodMacroSum, setFoodMacroSum, remainingMacro, setRemainingMacro} = props;
+  const chartRef = useRef();
+  const remaininngCalc = Math.round(remainingMacro[0][macroName] - remainingMacro[1][macroName])
+  const remaining = isNaN(remaininngCalc) ? 0 : remaininngCalc 
+  const chartData = [remaining, foodMacroSum[macroName]]
+  // console.log(foodMacroSum)  
   const data = {
-      labels: ['Consumed', 'Remaining'],
+      labels: ['Remaining','Consumed'],
       datasets: [{
-        data: dummyData,
+        data: chartData,
         backgroundColor: [
+          'rgb(54, 162, 235)',
           'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)'
         ],
         hoverOffset: 4
       }]
@@ -28,30 +35,36 @@ export default function MacroChart(props) {
       legend: {
         display: false,
       },
+      title: {
+        display: true,
+        text: macroName
+      }
     },
     responsive: true,
     maintainAspectRatio: false,
-    animation: false,
-    cutout: "65%"
+    animation: true,
+    cutout: "65%",
+    remaining
   }
-
-  const test = "300kcal"
+  // const test = "300kcal"
   const plugins = [{
     afterDraw: function(chart) {
-    const width = chart.width,
-        height = chart.height,
-        ctx = chart.ctx;
-        ctx.save();
-        const fontSize = (height/350);
-        ctx.font = `bold ${fontSize}em Helvetica Neue`;
-        // ctx.textBaseline = "top";
-        const text = `Remaining:`;
-        const text2 = ` ${test}`
-        const textX = Math.round((width - ctx.measureText(text).width) / 2);
-        const textY = height / 2;
-        ctx.fillText(text, textX, textY);
-        ctx.fillText(text2, textX, textY + 20);
-        ctx.restore();
+    const width = chart.width,height = chart.height,ctx = chart.ctx;
+    ctx.save();
+    const fontSize = (height/350);
+    ctx.font = `bold ${fontSize}em Helvetica Neue`;
+    // ctx.textBaseline = "top";
+    const text = `Remaining:`;
+    const text2 = chart.config.options.remaining
+    const text3 = `kcal`
+    const textX = Math.round((width - ctx.measureText(text).width) / 2);
+    const textX2 = Math.round((width - ctx.measureText(text2).width) / 2);
+    const textX3 = Math.round((width - ctx.measureText(text3).width) / 2);
+    const textY = height / 2;
+    ctx.fillText(text, textX, textY);
+    ctx.fillText(text2, textX2, textY + 20);
+    ctx.fillText(text3, textX3, textY + 40);
+    ctx.restore();
     } 
   }]
 

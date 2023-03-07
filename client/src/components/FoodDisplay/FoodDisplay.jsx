@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "chartjs-adapter-moment";
 
-import { Box, Toolbar, FormControl, InputLabel, Input, InputAdornment, TextField } from "@mui/material";
+import { Box, Toolbar, FormControl, InputLabel, Input, InputAdornment, TextField, Snackbar } from "@mui/material";
 
 import MacroChart from "./MacroChart";
 import DateSelector from "./DateSelector";
@@ -30,15 +30,20 @@ function useDebounceValue(value, time=1000) {
   return debounceValue;
 } 
 
-
-
 export default function FoodDisplay(props) {
 
-  const { drawerWidth, value, setValue, datePicker, setDatePicker } = props;
+  const { drawerWidth, value, setValue, datePicker, setDatePicker, macroData, setMacroData, foodMacroSum, foodMacro, setFoodMacro, setFoodMacroSu, remainingMacro, setRemainingMacro, setFoodMacroSum } = props;
 
   const [ queryFood, setQueryFood ] = useState("");
   const [queryFoodData, setQueryFoodData] = useState({})
   const [showQueryData, setShowQueryData] = useState(false);
+
+  //alert (snackbar) to show that user has either deleted or added new item
+  const [showAlert, setShowAlert] = useState({message:"", open: false});
+
+  //later want to get data from db and pass as props
+  // const [tempTestingData, setTempTestingData] = useState(gridData)
+
   // const [queryData, setQueryData] = useState({})
   const debounceQuery = useDebounceValue(queryFood);
 
@@ -54,6 +59,7 @@ export default function FoodDisplay(props) {
     (async () => {
       if (debounceQuery.length > 0) {
         const data = await fetchFoodData(debounceQuery);
+        console.log(data)
         if (!ignore) {
           console.log(data);
           setQueryFoodData(data);
@@ -67,6 +73,13 @@ export default function FoodDisplay(props) {
     }
   }, [debounceQuery])
 
+
+  //handle open and close for alerts
+  const handleClose = () => {
+    setShowAlert({ ...showAlert, open: false });
+  };
+
+
   return(
     <Box
       component="main"
@@ -79,6 +92,14 @@ export default function FoodDisplay(props) {
       sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
     > 
       <Toolbar/>
+
+      <Snackbar
+        anchorOrigin={{vertical:"bottom", horizontal: "left"}}
+        open={showAlert.open}
+        onClose={handleClose}
+        autoHideDuration={500}
+        message={showAlert.message}
+      />
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -109,9 +130,16 @@ export default function FoodDisplay(props) {
           // width={`calc(100% - ${drawerWidth}px)`}
           // padding-top={"100%"}
         >
-          {[0,0,0,0].map((value, index) => {
+          {["Protein", "Fat", "Carb", "Calories"].map((value, index) => {
               return (
-                  <MacroChart key={index} />
+                  <MacroChart 
+                    key={index} 
+                    macroName={value.toLowerCase()} 
+                    macroData={macroData} 
+                    setMacroData={setMacroData} 
+                    foodMacroSum={foodMacroSum} 
+                    remainingMacro={remainingMacro}  
+                  />
               )
           })}
         </Box>
@@ -136,7 +164,26 @@ export default function FoodDisplay(props) {
           width={"100%"} 
           margin={"auto"}
         >
-          {showQueryData ? <QueryTable queryFoodData={showQueryData ? queryFoodData : {}}/> : <FoodTable/>}
+          {showQueryData ? 
+            <QueryTable 
+            queryFoodData={showQueryData ? queryFoodData : {}}
+            tempTestingData={foodMacro}
+            setFoodMacro={setFoodMacro}
+            showAlert={showAlert}
+            setShowAlert={setShowAlert}
+            setFoodMacroSum={setFoodMacroSum}
+            foodMacro={foodMacro}
+            /> : 
+            <FoodTable
+              tempTestingData={foodMacro}
+              setFoodMacro={setFoodMacro}
+              showAlert={showAlert}
+              setShowAlert={setShowAlert}
+              foodMacroSum={foodMacroSum}
+              setFoodMacroSum={setFoodMacroSum}
+              foodMacro={foodMacro}
+            />
+          }
         </Box>
       </Box>
     </Box>

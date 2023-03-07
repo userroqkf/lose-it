@@ -7,7 +7,9 @@ import WeightMonthSelector from "./WeightDisplay/WeightMonthSelector";
 
 export default function Dashboard(props) {
   const {value, weightData, setWeightData, fixedData, drawerWidth, datePicker, 
-    setDatePicker,setValue, dateSelected, setDateSelected, setShowPage} = props;
+    setDatePicker,setValue, dateSelected, setDateSelected, setShowPage,
+    macroData, setMacroData, foodMacroSum,remainingMacro
+  } = props;
   return (
     <Box
       component="main"
@@ -47,10 +49,18 @@ export default function Dashboard(props) {
             setShowPage("FOOD")
           }}
         >
-          <MacroChart/>
-          <MacroChart/>
-          <MacroChart/>
-          <MacroChart/>
+          {["Protein", "Fat", "Carb", "Calories"].map((value, index) => {
+              return (
+                  <MacroChart 
+                    key={index} 
+                    macroName={value.toLowerCase()} 
+                    macroData={macroData} 
+                    setMacroData={setMacroData} 
+                    foodMacroSum={foodMacroSum} 
+                    remainingMacro={remainingMacro}  
+                  />
+              )
+          })}
         </Box>
 
         <Box
