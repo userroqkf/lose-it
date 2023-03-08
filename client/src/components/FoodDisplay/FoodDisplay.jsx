@@ -33,7 +33,7 @@ function useDebounceValue(value, time=1000) {
 export default function FoodDisplay(props) {
 
   const { drawerWidth, value, setValue, datePicker, setDatePicker, macroData, setMacroData, foodMacroSum, foodMacro, setFoodMacro, setFoodMacroSu, remainingMacro, setRemainingMacro, setFoodMacroSum } = props;
-
+  // date picker for foodDisplay
   const [ queryFood, setQueryFood ] = useState("");
   const [queryFoodData, setQueryFoodData] = useState({})
   const [showQueryData, setShowQueryData] = useState(false);
