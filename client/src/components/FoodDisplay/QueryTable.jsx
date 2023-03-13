@@ -8,7 +8,8 @@ import { Button } from "@mui/material";
 
 export default function QueryTable(props) {
 
-  const { queryFoodData, tempTestingData, setFoodMacro, foodMacro, showAlert, setShowAlert, setFoodMacroSum} = props;
+  const { queryFoodData, tempTestingData, setFoodMacro, foodMacro, showAlert, 
+    setShowAlert, setFoodMacroSum, setFixedFoodData, fixedFoodData, datePickerString} = props;
 
   const [selectionModel, setSelectionModel] = useState([]);
 
@@ -71,15 +72,30 @@ export default function QueryTable(props) {
         });
         if (!foodMacro.some(obj => obj.id === id)) {
           setFoodMacro(prev => [...prev, addItemData[0]])
+          setFixedFoodData(prev => {
+            if (prev[datePickerString])
+              return {...prev, [datePickerString]: [...prev[datePickerString],addItemData[0]]}
+            else {
+              return {...prev, [datePickerString]: [addItemData[0]]}
+            }
+          })
           setShowAlert((prev) => { return {...prev, message:"Added Item", open: true}})
-          setFoodMacroSum(foodMacro)
+          // setFoodMacroSum(foodMacro)
         } else {
           setShowAlert((prev) => { return {...prev, message:"Item Already Exists", open: true}})
         }
       });
     },
-    [gridData, setFoodMacro, setShowAlert, foodMacro, setFoodMacroSum],
+    [gridData, setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData],
   );
+
+  // useEffect(() => {
+  //   //add to fixed Data
+  //   const datePicked = datePicker['$d']
+  //   const dateToString = `${datePicked.getFullYear()}/${datePicked.getMonth() + 1}/${datePicked.getDate()}`
+  //   setFixedFoodData(prev => {
+  //     return {...prev, [dateToString]: foodMacro}})
+  // }, [foodMacro])
 
 
   const columns = [

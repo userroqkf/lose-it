@@ -32,8 +32,12 @@ function useDebounceValue(value, time=1000) {
 
 export default function FoodDisplay(props) {
 
-  const { drawerWidth, value, setValue, datePicker, setDatePicker, macroData, setMacroData, foodMacroSum, foodMacro, setFoodMacro, setFoodMacroSu, remainingMacro, setRemainingMacro, setFoodMacroSum } = props;
+  const { drawerWidth, value, setValue, datePicker, setDatePicker, macroData, 
+    setMacroData, foodMacroSum, foodMacro, setFoodMacro, setFoodMacroSu, 
+    remainingMacro, setRemainingMacro, setFoodMacroSum, setFixedFoodData, fixedFoodData,
+    datePickerString } = props;
   // date picker for foodDisplay
+  
   const [ queryFood, setQueryFood ] = useState("");
   const [queryFoodData, setQueryFoodData] = useState({})
   const [showQueryData, setShowQueryData] = useState(false);
@@ -79,15 +83,9 @@ export default function FoodDisplay(props) {
     setShowAlert({ ...showAlert, open: false });
   };
 
-
   return(
     <Box
       component="main"
-      // display={"flex"}
-      // flexDirection={"column"}
-      // alignContent={"center"}
-      // justifyContent={"center"}
-      // alignItems={"center"}
       height={"100%"}
       sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
     > 
@@ -104,8 +102,6 @@ export default function FoodDisplay(props) {
         display={"flex"}
         flexDirection={"column"}
         alignContent={"center"}
-        // justifyContent={"center"}
-        // alignItems={"center"}
       >
         <DateSelector 
           value={value}
@@ -115,8 +111,6 @@ export default function FoodDisplay(props) {
         />
         <Box
           display="flex"
-          // flexWrap={"wrap"}
-          // flex="1 1 auto"
           flexDirection={{xs:"column", sm:"row"}}
           alignContent={"center"}
           justifyContent={{xs:"center",sm:"space-around"}}
@@ -124,11 +118,6 @@ export default function FoodDisplay(props) {
           boxSizing="border-box"
           width={"100%"}
           overflow={"hidden"}
-          // flex={"0 0 1"}
-          // minWidth={"0"}
-          // height={`calc((100% - ${drawerWidth}px)/2)`}
-          // width={`calc(100% - ${drawerWidth}px)`}
-          // padding-top={"100%"}
         >
           {["Protein", "Fat", "Carb", "Calories"].map((value, index) => {
               return (
@@ -158,8 +147,6 @@ export default function FoodDisplay(props) {
           />
         </Box>
         <Box 
-          // position={"relative"} 
-          // height temp
           height={"50vh"} 
           width={"100%"} 
           margin={"auto"}
@@ -173,6 +160,11 @@ export default function FoodDisplay(props) {
             setShowAlert={setShowAlert}
             setFoodMacroSum={setFoodMacroSum}
             foodMacro={foodMacro}
+
+            fixedFoodData={fixedFoodData}
+            setFixedFoodData={setFixedFoodData}
+            datePicker={datePicker}
+            datePickerString={datePickerString}
             /> : 
             <FoodTable
               tempTestingData={foodMacro}
@@ -182,6 +174,11 @@ export default function FoodDisplay(props) {
               foodMacroSum={foodMacroSum}
               setFoodMacroSum={setFoodMacroSum}
               foodMacro={foodMacro}
+
+              fixedFoodData={fixedFoodData}
+              setFixedFoodData={setFixedFoodData}
+              datePicker={datePicker}
+              datePickerString={datePickerString}
             />
           }
         </Box>
