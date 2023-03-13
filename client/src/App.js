@@ -28,9 +28,8 @@ const values = testingWeightValue.map((int, index) => {
   return { x: addDays(index), y: int };
 });
 
-
-const gridData = [
-  {
+const gridData = {
+  '2023/3/10':  [{
     id : 1,
     brand: "no brand",
     food: "no food",
@@ -56,8 +55,8 @@ const gridData = [
     protein:50,
     fat: 18,
     calories: 800
-  }
-]
+  }]
+} 
 
 function App() {
   const drawerWidth = 240;
@@ -68,6 +67,12 @@ function App() {
   //Setting Calandar date
   const [value, setValue] = useState(new Date());
   const [datePicker, setDatePicker] = useState(dayjs(new Date()));
+  const [datePickerString, setDatePickerString] = useState(
+    () => {
+      const datePicked = datePicker['$d']
+      const dateToString = `${datePicked.getFullYear()}/${datePicked.getMonth() + 1}/${datePicked.getDate()}`
+    return dateToString}
+    )
 
   // Monthly date
   const [dateSelected, setDateSelected] = useState(dayjs(new Date()));
@@ -79,14 +84,30 @@ function App() {
     fat: 90,
     calories: 1800
   })
-
-  const [foodMacro, setFoodMacro] = useState(gridData)
-  // macroData added 
+  const [fixedFoodData, setFixedFoodData] = useState(gridData);
+  const [foodMacro, setFoodMacro] = useState([])
+  // macroData added dropdb
   const [foodMacroSum, setFoodMacroSum] = useState({carb: 0, protein: 0, fat: 0, calories:0})
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
 
   useEffect(() => {
-    if  ( foodMacro.length !== 0 ) {
+    const datePicked = datePicker['$d']
+        const dateToString = `${datePicked.getFullYear()}/${datePicked.getMonth() + 1}/${datePicked.getDate()}`
+    setDatePickerString( dateToString)
+  }, [datePicker])
+
+  useEffect(() => {
+    console.log("loop1");
+    if  ( fixedFoodData.hasOwnProperty(datePickerString) ) {
+      setFoodMacro(fixedFoodData[datePickerString])
+    } else {
+      setFoodMacro([])
+    }
+  },[datePicker,fixedFoodData, datePickerString])
+
+  useEffect(() => {
+    console.log("loop2");
+    if  ( Object.keys(foodMacro).length !== 0 ) {
       const macroSum =  foodMacro.reduce((acc, curr) => (
                                         {
                                           carb: acc.carb + curr.carb, 
@@ -97,11 +118,10 @@ function App() {
                                       )
       )
       setFoodMacroSum(macroSum);
-      console.log("remaining macro","macroData",remainingMacro[0], "macrosum",remainingMacro[1]);
     } else {
       setFoodMacroSum({carb: 0, protein: 0, fat: 0, calories:0})
     }
-  }, [foodMacro, macroData])
+  }, [foodMacro])
 
   useEffect(() => {
     setRemainingMacro([macroData, foodMacroSum])
@@ -173,6 +193,10 @@ function App() {
 
           remainingMacro={remainingMacro}
           setRemainingMacro={setRemainingMacro}
+
+          fixedFoodData={fixedFoodData}
+          setFixedFoodData={setFixedFoodData}
+          datePickerString={datePickerString}
         />
       }
     </Box>

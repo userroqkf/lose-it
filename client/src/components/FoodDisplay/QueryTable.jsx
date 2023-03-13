@@ -3,14 +3,10 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
 import AddIcon from '@mui/icons-material/Add';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Button } from "@mui/material";
-
 export default function QueryTable(props) {
 
-  const { queryFoodData, tempTestingData, setFoodMacro, foodMacro, showAlert, setShowAlert, setFoodMacroSum} = props;
-
-  const [selectionModel, setSelectionModel] = useState([]);
+  const { queryFoodData, tempTestingData, setFoodMacro, foodMacro, showAlert, 
+    setShowAlert, setFoodMacroSum, setFixedFoodData, fixedFoodData, datePickerString} = props;
 
   const [gridData, setGridData] = useState([]);
 
@@ -25,10 +21,15 @@ export default function QueryTable(props) {
           protein: "",
           fat: "",
           carb: "",
-          caloires: ""
+          caloires: "",
+          perserving:"",
+          servingunit:"",
+          servingSize:""
+
+
         }
 
-        if (value["foodNutrients"]) {
+        if (value["foodNutrients"] && value["servingSize"] && value["servingSizeUnit"]) {
         
           newFood["brand"] = value["brandName"]
           newFood["food"] = value["description"]
@@ -47,6 +48,10 @@ export default function QueryTable(props) {
               newFood["calories"] = nutrient["value"]
             }
           })
+
+          newFood["perserving"] = value["servingSize"]
+          newFood["servingunit"] = value["servingSizeUnit"]
+
           foodDataCleaned.push(newFood)
         }
       })
@@ -71,16 +76,22 @@ export default function QueryTable(props) {
         });
         if (!foodMacro.some(obj => obj.id === id)) {
           setFoodMacro(prev => [...prev, addItemData[0]])
+          setFixedFoodData(prev => {
+            if (prev[datePickerString])
+              return {...prev, [datePickerString]: [...prev[datePickerString],addItemData[0]]}
+            else {
+              return {...prev, [datePickerString]: [addItemData[0]]}
+            }
+          })
           setShowAlert((prev) => { return {...prev, message:"Added Item", open: true}})
-          setFoodMacroSum(foodMacro)
+          // setFoodMacroSum(foodMacro)
         } else {
           setShowAlert((prev) => { return {...prev, message:"Item Already Exists", open: true}})
         }
       });
     },
-    [gridData, setFoodMacro, setShowAlert, foodMacro, setFoodMacroSum],
+    [gridData, setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData],
   );
-
 
   const columns = [
     { field: "brand", headerName: "Brand", flex: 1 },
@@ -89,6 +100,9 @@ export default function QueryTable(props) {
     { field: "protein", headerName: "Protein", flex: 1 },
     { field: "fat", headerName: "Fat", flex: 1 },
     { field: "calories", headerName: "Calories", flex: 1 },
+    { field: "perserving", headerName: "Per Serving", flex: 1 },
+    { field: "servingunit", headerName: "Serving Unit", flex: 1 },
+    { field: "servingSize", headerName: "Serving Size", flex: 1 },
     {
       field: 'actions',
       type: 'actions',

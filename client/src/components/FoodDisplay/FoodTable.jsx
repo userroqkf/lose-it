@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
 
 import DeleteCheckBox from "../DeleteCheckBox";
@@ -7,7 +7,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function FoodTable(props) {
 
-  const {tempTestingData, setFoodMacro,foodMacro, showAlert, setShowAlert,foodMacroSum, setFoodMacroSum} = props;
+  const {tempTestingData, setFoodMacro,foodMacro, showAlert, setShowAlert,
+    foodMacroSum, setFoodMacroSum, datePicker, setFixedFoodData, fixedFoodData, datePickerString} = props;
 
 
   const columns = [
@@ -25,26 +26,29 @@ export default function FoodTable(props) {
         <GridActionsCellItem
           icon={<DeleteIcon />}
           label="Delete"
-          onClick={() => deleteUser(params.id)}
+          onClick={() => deleteItem(params.id)}
         />,
       ],
     },
   ]
 
-  const deleteUser = useCallback(
+  const deleteItem = useCallback(
     (id) => {
       setTimeout(() => {
         setFoodMacro((prevRows) => prevRows.filter((row) => row.id !== id));
         setShowAlert((prev) => { return {...prev, message:"Deleted Item", open: true}})
-        setFoodMacroSum(foodMacro)
-        // console.log("macro",foodMacro)
-        // console.log("macro sum",foodMacroSum)
+
+        const filteredData = fixedFoodData[datePickerString].filter((row, index) => {
+          return row.id !== id
+        })
+        setFixedFoodData(prev => {
+          return {...prev, [datePickerString]: filteredData}
+        })
+
       });
     },
-    [setFoodMacro, setShowAlert,setFoodMacroSum, foodMacro],
+    [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, datePickerString],
   );
-
-
 
   return (
     <DataGrid
