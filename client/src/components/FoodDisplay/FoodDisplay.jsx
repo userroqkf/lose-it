@@ -45,14 +45,12 @@ export default function FoodDisplay(props) {
   //alert (snackbar) to show that user has either deleted or added new item
   const [showAlert, setShowAlert] = useState({message:"", open: false});
 
-  //later want to get data from db and pass as props
-  // const [tempTestingData, setTempTestingData] = useState(gridData)
 
   // const [queryData, setQueryData] = useState({})
   const debounceQuery = useDebounceValue(queryFood);
 
   function fetchFoodData (query) {
-    return fetch(`http://localhost:8000/api_key?food=${query}`)
+    return fetch(`http://localhost:8000/search_food?food=${query}`)
     .then(res => res.json())
     .then(data => data.foods)
   }

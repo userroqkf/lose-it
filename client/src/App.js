@@ -86,7 +86,7 @@ function App() {
   })
   const [fixedFoodData, setFixedFoodData] = useState(gridData);
   const [foodMacro, setFoodMacro] = useState([])
-  // macroData added 
+  // macroData added dropdb
   const [foodMacroSum, setFoodMacroSum] = useState({carb: 0, protein: 0, fat: 0, calories:0})
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
 
@@ -96,8 +96,6 @@ function App() {
     setDatePickerString( dateToString)
   }, [datePicker])
 
-
-  //causing infinite loop
   useEffect(() => {
     console.log("loop1");
     if  ( fixedFoodData.hasOwnProperty(datePickerString) ) {
@@ -129,14 +127,6 @@ function App() {
     setRemainingMacro([macroData, foodMacroSum])
   }, [macroData, foodMacroSum])
 
-  useEffect(() => {
-    console.log("tst");
-    console.log(foodMacro);
-    // setFixedFoodData(prev => {
-    //   return {...prev, [datePickerString]: foodMacro}
-    // })
-    // setFixedFoodData(foodMacro)
-  }, [foodMacro, datePickerString])
 
   return (
     <Box sx={{ display: "flex" }}>

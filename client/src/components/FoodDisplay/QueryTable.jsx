@@ -3,15 +3,10 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
 import AddIcon from '@mui/icons-material/Add';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Button } from "@mui/material";
-
 export default function QueryTable(props) {
 
   const { queryFoodData, tempTestingData, setFoodMacro, foodMacro, showAlert, 
     setShowAlert, setFoodMacroSum, setFixedFoodData, fixedFoodData, datePickerString} = props;
-
-  const [selectionModel, setSelectionModel] = useState([]);
 
   const [gridData, setGridData] = useState([]);
 
@@ -26,10 +21,15 @@ export default function QueryTable(props) {
           protein: "",
           fat: "",
           carb: "",
-          caloires: ""
+          caloires: "",
+          perserving:"",
+          servingunit:"",
+          servingSize:""
+
+
         }
 
-        if (value["foodNutrients"]) {
+        if (value["foodNutrients"] && value["servingSize"] && value["servingSizeUnit"]) {
         
           newFood["brand"] = value["brandName"]
           newFood["food"] = value["description"]
@@ -48,6 +48,10 @@ export default function QueryTable(props) {
               newFood["calories"] = nutrient["value"]
             }
           })
+
+          newFood["perserving"] = value["servingSize"]
+          newFood["servingunit"] = value["servingSizeUnit"]
+
           foodDataCleaned.push(newFood)
         }
       })
@@ -89,15 +93,6 @@ export default function QueryTable(props) {
     [gridData, setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData],
   );
 
-  // useEffect(() => {
-  //   //add to fixed Data
-  //   const datePicked = datePicker['$d']
-  //   const dateToString = `${datePicked.getFullYear()}/${datePicked.getMonth() + 1}/${datePicked.getDate()}`
-  //   setFixedFoodData(prev => {
-  //     return {...prev, [dateToString]: foodMacro}})
-  // }, [foodMacro])
-
-
   const columns = [
     { field: "brand", headerName: "Brand", flex: 1 },
     { field: "food", headerName: "Food", flex: 1 },
@@ -105,6 +100,9 @@ export default function QueryTable(props) {
     { field: "protein", headerName: "Protein", flex: 1 },
     { field: "fat", headerName: "Fat", flex: 1 },
     { field: "calories", headerName: "Calories", flex: 1 },
+    { field: "perserving", headerName: "Per Serving", flex: 1 },
+    { field: "servingunit", headerName: "Serving Unit", flex: 1 },
+    { field: "servingSize", headerName: "Serving Size", flex: 1 },
     {
       field: 'actions',
       type: 'actions',
