@@ -17,7 +17,6 @@ export default function MacroChart(props) {
   const remaininngCalc = Math.round(remainingMacro[0][macroName] - remainingMacro[1][macroName])
   const remaining = isNaN(remaininngCalc) ? 0 : remaininngCalc 
   const chartData = [remaining, foodMacroSum[macroName]]
-  // console.log(foodMacroSum)  
   const data = {
       labels: ['Remaining','Consumed'],
       datasets: [{
