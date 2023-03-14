@@ -10,12 +10,10 @@ app.use(express.json());
 // const API_KEY = process.env.NODE_ENV;
 const API_KEY = "s99Gif3tGh1LNr63BgQULwOxS2zveA4k81MHoTm8";
 
-app.get("/api_key", async(req, res) => {
-  console.log("here 1");
+app.get("/search_food", async(req, res) => {
   const query = req.query.food;
   fetch(`https://api.nal.usda.gov/fdc/v1/foods/search/?api_key=${API_KEY}&query=${query}`)
     .then(res =>{
-      console.log("here 2");
       if (res.ok) {
         return res.json();
       }
