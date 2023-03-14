@@ -18,6 +18,9 @@ export default function FoodTable(props) {
     { field: "protein", headerName: "Protein", flex: 1 },
     { field: "fat", headerName: "Fat", flex: 1 },
     { field: "calories", headerName: "Calories", flex: 1 },
+    { field: "perserving", headerName: "Per Serving", flex: 1},
+    { field: "servingunit", headerName: "Serving Unit", flex: 1},
+    { field: "servingSize", headerName: "Serving Size",flex: 1},
     {
       field: 'actions',
       type: 'actions',

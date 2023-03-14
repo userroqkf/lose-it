@@ -10,6 +10,9 @@ export default function QueryTable(props) {
 
   const [gridData, setGridData] = useState([]);
 
+  //set serving size and change grid data
+  const [servingSize, setServingSize] = useState(1);
+
   function cleanQueryFoodData(foodData) {
     setGridData([])
     const foodDataCleaned = [];
@@ -24,7 +27,7 @@ export default function QueryTable(props) {
           caloires: "",
           perserving:"",
           servingunit:"",
-          servingSize:""
+          servingSize:"1"
 
 
         }
@@ -33,7 +36,6 @@ export default function QueryTable(props) {
         
           newFood["brand"] = value["brandName"]
           newFood["food"] = value["description"]
-          // error coming from here where forEach Loop
           value["foodNutrients"].forEach((nutrient, index) => {
             if (nutrient["nutrientId"] === 1003) {
               newFood["protein"] = nutrient["value"]
@@ -60,27 +62,54 @@ export default function QueryTable(props) {
   
 
   useEffect(() => {
-    console.log("queryfooddata")
     const data = cleanQueryFoodData(queryFoodData);
-    console.log(data)
     setGridData(data);
   }, [queryFoodData])
-
   
+
+  const processRowUpdate = useCallback(
+    (newRow) => {
+        if (newRow.servingSize > 0) {
+          let updatedRow = {...newRow, 
+            carb: newRow.carb * newRow.servingSize,
+            fat: newRow.fat * newRow.servingSize,
+            protein: newRow.protein * newRow.servingSize,
+            calories: newRow.calories * newRow.servingSize,
+          }
+          console.log("updated row", updatedRow);
+          const updateRow = {...updatedRow, isNew:true}
+          // setGridData((prev) => {
+          //   prev.forEach(food => {
+          //     if (food.id === newRow.id) {
+  
+          //     }
+          //   })
+          // })
+  
+          return updateRow;
+        } else {
+          return {...newRow, isNew:false}
+        }
+      }, []
+  )
+
   const addItem = useCallback(
-    (id) => {
+    (params) => {
       setTimeout(() => {
-        const addItemData = gridData.filter((row) => {
-          console.log(row, row.id, id, row.id === id)
-          return row.id === id
-        });
-        if (!foodMacro.some(obj => obj.id === id)) {
-          setFoodMacro(prev => [...prev, addItemData[0]])
+        // const addItemData = gridData.filter((row) => {
+        //   console.log(row, row.id, id, row.id === id)
+        //   return row.id === id
+        // });
+        if (!(params.row.servingSize > 0)) {
+          setShowAlert((prev) => { return {...prev, message:"Please Specify Serving Size", open: true}})
+        }else if (!foodMacro.some(obj => obj.id === params.id)) {
+          console.log("params row clg",params.row)
+          setFoodMacro(prev => [...prev, params.row])
           setFixedFoodData(prev => {
             if (prev[datePickerString])
-              return {...prev, [datePickerString]: [...prev[datePickerString],addItemData[0]]}
+              return {...prev, [datePickerString]: [...prev[datePickerString],params.row]}
             else {
-              return {...prev, [datePickerString]: [addItemData[0]]}
+              return {...prev, [datePickerString]: [params.row]}
             }
           })
           setShowAlert((prev) => { return {...prev, message:"Added Item", open: true}})
@@ -90,19 +119,45 @@ export default function QueryTable(props) {
         }
       });
     },
-    [gridData, setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData],
+    [setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData],
   );
 
   const columns = [
     { field: "brand", headerName: "Brand", flex: 1 },
     { field: "food", headerName: "Food", flex: 1 },
-    { field: "carb", headerName: "Carb", flex: 1 },
-    { field: "protein", headerName: "Protein", flex: 1 },
-    { field: "fat", headerName: "Fat", flex: 1 },
-    { field: "calories", headerName: "Calories", flex: 1 },
-    { field: "perserving", headerName: "Per Serving", flex: 1 },
-    { field: "servingunit", headerName: "Serving Unit", flex: 1 },
-    { field: "servingSize", headerName: "Serving Size", flex: 1 },
+    { field: "carb",
+      headerName: "Carb", 
+      flex: 1,
+      // valueGetter: (params) => params.row.carb * params.row.servingSize 
+    },
+    { field: "protein", 
+    headerName: "Protein", 
+    flex: 1,
+    // valueGetter: (params) => params.row.protein * params.row.servingSize 
+  },
+    { field: "fat", 
+    headerName: "Fat", 
+    flex: 1 ,
+    // valueGetter: (params) => params.row.fat * params.row.servingSize 
+  },
+    { field: "calories", 
+    headerName: "Calories", 
+    flex: 1 ,
+    // valueGetter: (params) => params.row.calories * params.row.servingSize 
+  },
+    { field: "perserving", 
+    headerName: "Per Serving", 
+    flex: 1 ,
+  },
+    { field: "servingunit", 
+    headerName: "Serving Unit", 
+    flex: 1 ,
+  },
+    { field: "servingSize", 
+    headerName: "Serving Size", 
+    editable: true,
+    flex: 1,
+  },
     {
       field: 'actions',
       type: 'actions',
@@ -113,7 +168,7 @@ export default function QueryTable(props) {
           icon={<AddIcon />}
           label="Add Item"
           onClick={() => {
-            addItem(params.id)
+            addItem(params)
           }}
         />,
       ],
@@ -125,8 +180,9 @@ export default function QueryTable(props) {
       rows={gridData}
       columns={columns}
       pageSize={100}
-      getRowId={(row) => row.id}
-
+      // getRowId={(row) => row.id}
+      processRowUpdate={processRowUpdate}
+      experimentalFeatures={{ newEditingApi: true }}
     />
   )
 }
