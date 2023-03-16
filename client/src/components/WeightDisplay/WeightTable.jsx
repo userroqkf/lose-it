@@ -13,6 +13,11 @@ export default function WeightTable(props) {
     return gridData.filter((data) => data.id === rowId);
   }
 
+  //Delete data from database
+  function deleteWeightData(date) {
+    fetch()
+  };
+
   // When Delete Icon is pressed in DataGrid, filter data from fixed Data => trigger rerender for chart as well
   function deleteData(rowId) {
     const rowData = getRowById(rowId);

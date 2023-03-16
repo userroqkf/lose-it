@@ -28,6 +28,8 @@ const values = testingWeightValue.map((int, index) => {
   return { x: addDays(index), y: int };
 });
 
+console.log("vals",values)
+
 const gridData = {
   '2023/3/10':  [{
     id : 1,
@@ -60,10 +62,10 @@ const gridData = {
 
 function App() {
   const drawerWidth = 240;
-  const [showPage, setShowPage] = useState("FOOD");
+  const [showPage, setShowPage] = useState("DASHBOARD");
   
-  const [fixedData, setFixedData] = useState(values);
-  const [weightData, setWeightData] = useState(values);
+  const [fixedData, setFixedData] = useState([]);
+  const [weightData, setWeightData] = useState([]);
   //Setting Calandar date
   const [value, setValue] = useState(new Date());
   const [datePicker, setDatePicker] = useState(dayjs(new Date()));
@@ -89,6 +91,20 @@ function App() {
   // macroData added dropdb
   const [foodMacroSum, setFoodMacroSum] = useState({carb: 0, protein: 0, fat: 0, calories:0})
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
+
+  //fetching weight data for user
+  useEffect(() => {
+    fetch(`http://localhost:8000/api/users/${1}/weight`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("data",data)
+        const weights = data.map(row => ({
+          x: new Date(row.x),
+          y: row.y
+        }));
+        console.log("weights",weights)
+        setFixedData(weights)})
+  }, []);
 
   useEffect(() => {
     const datePicked = datePicker['$d']
