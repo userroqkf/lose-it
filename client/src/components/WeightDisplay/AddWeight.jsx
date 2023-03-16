@@ -20,33 +20,50 @@ export default function AddWeight(props) {
   const [weightInputDate, setWeightInputDate] = useState(new Date());
   const [weightExists, setWeightExists] = useState(false);
 
-    const addData = (data) => {
-      const [day, month, year] = weightInputDate.toLocaleDateString().split("/");
-      const selectedInputDate = new Date(year, month - 1, day);
-      selectedInputDate.setHours(0, 0, 0);
-      const found =  weightData.some(data =>
-        data.x.getDate() === selectedInputDate.getDate() && 
-        data.x.getDay() === selectedInputDate.getDay() &&
-        data.x.getFullYear() === selectedInputDate.getFullYear()
-        )
-      if (!found) {
-        setWeightData((prev) =>
-        [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
-          console.log(prev)
-          return new Date(b.x) - new Date(a.x);
-        })
-      );
-      setFixedData((prev) =>
-        [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
-          return new Date(b.x) - new Date(a.x);
-        })
-      );
-      setWeightInput("");
-      } else {
-        setWeightExists(true)
-      }
-    }
-    ;
+const postWeightData = async (userId, inputDate, inputWeight) => {
+  console.log("input date", inputDate);
+  const [day, month, year] = inputDate.toLocaleDateString().split('/')
+  const inputDateCleaned = `${year}-${month}-${day}`
+  const res = await fetch(`http://localhost:8000/api/users/${userId}/weight`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({inputDate: inputDateCleaned,inputWeight})
+  });
+  console.log("res", res)
+  return res
+}
+
+const addData = async (data) => {
+  const [day, month, year] = weightInputDate.toLocaleDateString().split("/");
+  const selectedInputDate = new Date(year, month - 1, day);
+  selectedInputDate.setHours(0, 0, 0);
+  const found =  weightData.some(data =>
+    data.x.getDate() === selectedInputDate.getDate() && 
+    data.x.getDay() === selectedInputDate.getDay() &&
+    data.x.getFullYear() === selectedInputDate.getFullYear()
+    )
+
+  if (!found) {
+    const postedWeightData = await postWeightData(1, selectedInputDate, data);
+    setWeightData((prev) =>
+    [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
+      console.log(prev)
+      return new Date(b.x) - new Date(a.x);
+    })
+  );
+  setFixedData((prev) =>
+    [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
+      return new Date(b.x) - new Date(a.x);
+    })
+  );
+  setWeightInput("");
+  } else {
+    setWeightExists(true)
+  }
+}
+;
   
 
   return (
