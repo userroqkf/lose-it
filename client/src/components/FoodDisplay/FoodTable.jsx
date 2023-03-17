@@ -18,8 +18,8 @@ export default function FoodTable(props) {
     { field: "protein", headerName: "Protein", flex: 1 },
     { field: "fat", headerName: "Fat", flex: 1 },
     { field: "calories", headerName: "Calories", flex: 1 },
-    { field: "perserving", headerName: "Per Serving", flex: 1},
-    { field: "servingunit", headerName: "Serving Unit", flex: 1},
+    { field: "perServing", headerName: "Per Serving", flex: 1},
+    { field: "servingUnit", headerName: "Serving Unit", flex: 1},
     { field: "servingSize", headerName: "Serving Size",flex: 1},
     {
       field: 'actions',
@@ -35,9 +35,20 @@ export default function FoodTable(props) {
     },
   ]
 
+  const deleteFoodData = (id) => {
+    fetch(`http://localhost:8000/api/users/${1}/food/delete`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({foodId: id})
+    })
+  }
+
   const deleteItem = useCallback(
     (id) => {
-      setTimeout(() => {
+      setTimeout(async() => {
+        await deleteFoodData(id);
         setFoodMacro((prevRows) => prevRows.filter((row) => row.id !== id));
         setShowAlert((prev) => { return {...prev, message:"Deleted Item", open: true}})
 
@@ -47,7 +58,6 @@ export default function FoodTable(props) {
         setFixedFoodData(prev => {
           return {...prev, [datePickerString]: filteredData}
         })
-
       });
     },
     [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, datePickerString],

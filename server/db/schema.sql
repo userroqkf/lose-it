@@ -23,13 +23,14 @@ CREATE TABLE weights (
 CREATE TABLE foods (
   id SERIAL PRIMARY KEY,
   owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  food_id INTEGER NOT NULL,
   brand VARCHAR(255),
-  food_name VARCHAR(255) NOT NULL,
+  food VARCHAR(255) NOT NULL,
   carb DOUBLE PRECISION,
   protein DOUBLE PRECISION,
   fat DOUBLE PRECISION,
   calories DOUBLE PRECISION,
-  grams_per_serving DOUBLE PRECISION,
+  per_serving DOUBLE PRECISION,
   serving_size_unit VARCHAR(255),
   serving_size DOUBLE PRECISION,
   date DATE

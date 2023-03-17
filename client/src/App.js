@@ -28,37 +28,37 @@ const values = testingWeightValue.map((int, index) => {
   return { x: addDays(index), y: int };
 });
 
-console.log("vals",values)
+// console.log("vals",values)
 
-const gridData = {
-  '2023/3/10':  [{
-    id : 1,
-    brand: "no brand",
-    food: "no food",
-    carb: 30,
-    protein: 20,
-    fat: 12,
-    calories: 200
-  },
-  {
-    id : 2,
-    brand: "no brand",
-    food: "no food",
-    carb: 10,
-    protein:35,
-    fat: 20,
-    calories: 350
-  },
-  {
-    id : 3,
-    brand: "no brand",
-    food: "no food",
-    carb: 90,
-    protein:50,
-    fat: 18,
-    calories: 800
-  }]
-} 
+// const gridData = {
+//   '2023/3/10':  [{
+//     id : 1,
+//     brand: "no brand",
+//     food: "no food",
+//     carb: 30,
+//     protein: 20,
+//     fat: 12,
+//     calories: 200
+//   },
+//   {
+//     id : 2,
+//     brand: "no brand",
+//     food: "no food",
+//     carb: 10,
+//     protein:35,
+//     fat: 20,
+//     calories: 350
+//   },
+//   {
+//     id : 3,
+//     brand: "no brand",
+//     food: "no food",
+//     carb: 90,
+//     protein:50,
+//     fat: 18,
+//     calories: 800
+//   }]
+// } 
 
 function App() {
   const drawerWidth = 240;
@@ -72,7 +72,7 @@ function App() {
   const [datePickerString, setDatePickerString] = useState(
     () => {
       const datePicked = datePicker['$d']
-      const dateToString = `${datePicked.getFullYear()}/${datePicked.getMonth() + 1}/${datePicked.getDate()}`
+      const dateToString = `${datePicked.getFullYear()}-${datePicked.getMonth() + 1}-${datePicked.getDate()}`
     return dateToString}
     )
 
@@ -86,11 +86,21 @@ function App() {
     fat: 90,
     calories: 1800
   })
-  const [fixedFoodData, setFixedFoodData] = useState(gridData);
+  const [fixedFoodData, setFixedFoodData] = useState({});
   const [foodMacro, setFoodMacro] = useState([])
   // macroData added dropdb
   const [foodMacroSum, setFoodMacroSum] = useState({carb: 0, protein: 0, fat: 0, calories:0})
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
+
+  //fetching food data for user
+  useEffect(() => {
+    fetch(`http://localhost:8000/api/users/${1}/food`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        setFixedFoodData(data);
+      })
+  }, [])
 
   //fetching weight data for user
   useEffect(() => {
@@ -102,18 +112,22 @@ function App() {
           x: new Date(row.x),
           y: row.y
         }));
-        console.log("weights",weights)
-        setFixedData(weights)})
+        const sortedWeights = weights.sort((a, b) => {
+          return new Date(b.x) - new Date(a.x);
+        });
+        setFixedData(sortedWeights)})
   }, []);
 
   useEffect(() => {
     const datePicked = datePicker['$d']
-        const dateToString = `${datePicked.getFullYear()}/${datePicked.getMonth() + 1}/${datePicked.getDate()}`
+    const [day, month, year] = new Date(datePicked).toLocaleDateString().split("/");
+    const dateToString = `${year}-${month}-${day}`
     setDatePickerString( dateToString)
   }, [datePicker])
 
   useEffect(() => {
     console.log("loop1");
+    console.log("date picker string",datePickerString)
     if  ( fixedFoodData.hasOwnProperty(datePickerString) ) {
       setFoodMacro(fixedFoodData[datePickerString])
     } else {
