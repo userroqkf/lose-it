@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import DeleteCheckBox from "../DeleteCheckBox";
 
@@ -14,15 +15,27 @@ export default function WeightTable(props) {
   }
 
   //Delete data from database
-  function deleteWeightData(date) {
-    fetch()
+  const deleteWeightData  = async(date) => {
+    const [day, month, year] = date.toLocaleDateString().split('/')
+    const inputDateCleaned = `${year}-${month}-${day}`
+    console.log(inputDateCleaned);
+    const res = await fetch(`http://localhost:8000/api/users/${1}/weight/delete`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({inputDate: inputDateCleaned})
+    });
+    return res
   };
 
   // When Delete Icon is pressed in DataGrid, filter data from fixed Data => trigger rerender for chart as well
-  function deleteData(rowId) {
+  const deleteData = async(rowId) => {
+    console.log(rowId)
     const rowData = getRowById(rowId);
-    const [day, month, year] = rowData[0].date.split("/");
+    const [day, month, year] = rowData[0].date.split('/');
     const rowDataDate = new Date(year, month - 1, day);
+    await deleteWeightData(rowDataDate);
     setFixedData((prev) => {
       return prev.filter((data) => {
         return data.x.toDateString() !== rowDataDate.toDateString();
@@ -50,6 +63,21 @@ export default function WeightTable(props) {
   const columns = [
     { field: "date", headerName: "Date", flex: 1 },
     { field: "weight", headerName: "Weight", editable: true, flex: 1 },
+    {
+      field: 'actions',
+      type: 'actions',
+      width: 80,
+      headerName: "Delete",
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label="Delete Item"
+          onClick={() => {
+            deleteData(params.row.id)
+          }}
+        />,
+      ],
+    },
   ];
 
 
@@ -60,22 +88,7 @@ export default function WeightTable(props) {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
-        checkboxSelection
         experimentalFeatures={{ newEditingApi: true }}
-        components={{
-          BaseCheckbox: DeleteCheckBox,
-        }}
-        onSelectionModelChange={(data) => {
-          console.log("selected row id", data);
-          deleteData(data[0]);
-        }}
-        selectionModel={selectionModel}
-        sx={{
-          "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer":
-            {
-              display: "none",
-            },
-        }}
       />
     </Box>
   )

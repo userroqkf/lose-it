@@ -10,7 +10,8 @@ import WeightChart from "./WeightChart";
 
 export default function WeightDisplay(props) {
     const {value, setValue, weightData, setWeightData, fixedData, setFixedData, dateSelected, setDateSelected} = props;
-  return (
+
+    return (
     <Box 
       component="main" 
       width={"100%"}

@@ -54,7 +54,6 @@ export default function FoodDisplay(props) {
     .then(res => res.json())
     .then(data => data.foods)
   }
-
   //fetching data from server
   useEffect(() => {
     let ignore = false;

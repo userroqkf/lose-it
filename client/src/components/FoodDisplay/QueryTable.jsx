@@ -19,14 +19,15 @@ export default function QueryTable(props) {
     foodData.forEach((value, index) => {
         const newFood = {
           id : value["fdcId"],
+          foodId: value["fdcId"],
           brand: "",
           food: "",
           protein: "",
           fat: "",
           carb: "",
           caloires: "",
-          perserving:"",
-          servingunit:"",
+          perServing:"",
+          servingUnit:"",
           servingSize:"1"
 
 
@@ -51,8 +52,8 @@ export default function QueryTable(props) {
             }
           })
 
-          newFood["perserving"] = value["servingSize"]
-          newFood["servingunit"] = value["servingSizeUnit"]
+          newFood["perServing"] = value["servingSize"]
+          newFood["servingUnit"] = value["servingSizeUnit"]
 
           foodDataCleaned.push(newFood)
         }
@@ -78,13 +79,6 @@ export default function QueryTable(props) {
           }
           console.log("updated row", updatedRow);
           const updateRow = {...updatedRow, isNew:true}
-          // setGridData((prev) => {
-          //   prev.forEach(food => {
-          //     if (food.id === newRow.id) {
-  
-          //     }
-          //   })
-          // })
   
           return updateRow;
         } else {
@@ -93,17 +87,24 @@ export default function QueryTable(props) {
       }, []
   )
 
+  const addFoodData = async(data, date) => {
+    fetch(`http://localhost:8000/api/users/${1}/food/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({foodData: data, date})
+    })
+  }
+
   const addItem = useCallback(
     (params) => {
-      setTimeout(() => {
-        // const addItemData = gridData.filter((row) => {
-        //   console.log(row, row.id, id, row.id === id)
-        //   return row.id === id
-        // });
+      setTimeout(async () => {
         if (!(params.row.servingSize > 0)) {
           setShowAlert((prev) => { return {...prev, message:"Please Specify Serving Size", open: true}})
-        }else if (!foodMacro.some(obj => obj.id === params.id)) {
-          console.log("params row clg",params.row)
+        }else if (!foodMacro.some(obj => obj.foodId === params.id)) {
+          console.log(params.row)
+          await addFoodData(params.row, datePickerString)
           setFoodMacro(prev => [...prev, params.row])
           setFixedFoodData(prev => {
             if (prev[datePickerString])
@@ -113,7 +114,6 @@ export default function QueryTable(props) {
             }
           })
           setShowAlert((prev) => { return {...prev, message:"Added Item", open: true}})
-          // setFoodMacroSum(foodMacro)
         } else {
           setShowAlert((prev) => { return {...prev, message:"Item Already Exists", open: true}})
         }
@@ -145,11 +145,11 @@ export default function QueryTable(props) {
     flex: 1 ,
     // valueGetter: (params) => params.row.calories * params.row.servingSize 
   },
-    { field: "perserving", 
+    { field: "perServing", 
     headerName: "Per Serving", 
     flex: 1 ,
   },
-    { field: "servingunit", 
+    { field: "servingUnit", 
     headerName: "Serving Unit", 
     flex: 1 ,
   },
@@ -185,4 +185,5 @@ export default function QueryTable(props) {
       experimentalFeatures={{ newEditingApi: true }}
     />
   )
-}
+
+  }
