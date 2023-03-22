@@ -7,8 +7,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function FoodTable(props) {
 
-  const {tempTestingData, setFoodMacro,foodMacro, showAlert, setShowAlert,
-    foodMacroSum, setFoodMacroSum, datePicker, setFixedFoodData, fixedFoodData, datePickerString} = props;
+  const {tempTestingData, setFoodMacro, setShowAlert,setFixedFoodData, fixedFoodData, 
+    datePickerString, apiServerUrl} = props;
 
 
   const columns = [
@@ -34,9 +34,8 @@ export default function FoodTable(props) {
       ],
     },
   ]
-
   const deleteFoodData = (id) => {
-    fetch(`http://localhost:8000/api/users/${1}/food/delete`, {
+    fetch(`${apiServerUrl}/api/users/${1}/food/delete`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
@@ -60,7 +59,7 @@ export default function FoodTable(props) {
         })
       });
     },
-    [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, datePickerString],
+    [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, datePickerString, deleteFoodData],
   );
 
   return (

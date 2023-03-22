@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteCheckBox from "../DeleteCheckBox";
 
 export default function WeightTable(props) {
-  const { weightData, setFixedData } = props;
+  const { weightData, setFixedData, apiServerUrl } = props;
   // Keep track of data grid row selection
   const [selectionModel, setSelectionModel] = useState([]);
 
@@ -19,7 +19,7 @@ export default function WeightTable(props) {
     const [day, month, year] = date.toLocaleDateString().split('/')
     const inputDateCleaned = `${year}-${month}-${day}`
     console.log(inputDateCleaned);
-    const res = await fetch(`http://localhost:8000/api/users/${1}/weight/delete`, {
+    const res = await fetch(`${apiServerUrl}/api/users/${1}/weight/delete`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'

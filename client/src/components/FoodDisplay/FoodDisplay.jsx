@@ -33,9 +33,9 @@ function useDebounceValue(value, time=1000) {
 export default function FoodDisplay(props) {
 
   const { drawerWidth, value, setValue, datePicker, setDatePicker, macroData, 
-    setMacroData, foodMacroSum, foodMacro, setFoodMacro, setFoodMacroSu, 
-    remainingMacro, setRemainingMacro, setFoodMacroSum, setFixedFoodData, fixedFoodData,
-    datePickerString } = props;
+    setMacroData, foodMacroSum, foodMacro, setFoodMacro, remainingMacro, 
+    setFoodMacroSum, setFixedFoodData, fixedFoodData, datePickerString,
+    apiServerUrl} = props;
   // date picker for foodDisplay
   
   const [ queryFood, setQueryFood ] = useState("");
@@ -50,7 +50,7 @@ export default function FoodDisplay(props) {
   const debounceQuery = useDebounceValue(queryFood);
 
   function fetchFoodData (query) {
-    return fetch(`http://localhost:8000/search_food?food=${query}`)
+    return fetch(`${apiServerUrl}/search_food?food=${query}`)
     .then(res => res.json())
     .then(data => data.foods)
   }
@@ -162,6 +162,9 @@ export default function FoodDisplay(props) {
             setFixedFoodData={setFixedFoodData}
             datePicker={datePicker}
             datePickerString={datePickerString}
+
+            apiServerUrl={apiServerUrl}
+            
             /> : 
             <FoodTable
               tempTestingData={foodMacro}
@@ -176,6 +179,8 @@ export default function FoodDisplay(props) {
               setFixedFoodData={setFixedFoodData}
               datePicker={datePicker}
               datePickerString={datePickerString}
+
+              apiServerUrl={apiServerUrl}
             />
           }
         </Box>

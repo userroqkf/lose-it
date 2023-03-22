@@ -10,62 +10,13 @@ import FoodDisplay from "./components/FoodDisplay/FoodDisplay";
 import dayjs from "dayjs";
 //Functions needed to created dummy data
 
-const max = 90;
-const min = 60;
-
-
-const testingWeightValue = Array.from({ length: 100 }, () =>
-Math.floor(Math.random() * (max - min) + min)
-);
-const addDays = function (days) {
-  const date = new Date();
-  date.setDate(date.getDate() + days);
-  date.setHours(0, 0, 0);
-  return date;
-};
-
-const values = testingWeightValue.map((int, index) => {
-  return { x: addDays(index), y: int };
-});
-
-// console.log("vals",values)
-
-// const gridData = {
-//   '2023/3/10':  [{
-//     id : 1,
-//     brand: "no brand",
-//     food: "no food",
-//     carb: 30,
-//     protein: 20,
-//     fat: 12,
-//     calories: 200
-//   },
-//   {
-//     id : 2,
-//     brand: "no brand",
-//     food: "no food",
-//     carb: 10,
-//     protein:35,
-//     fat: 20,
-//     calories: 350
-//   },
-//   {
-//     id : 3,
-//     brand: "no brand",
-//     food: "no food",
-//     carb: 90,
-//     protein:50,
-//     fat: 18,
-//     calories: 800
-//   }]
-// } 
-
 function App() {
   const drawerWidth = 240;
   const [showPage, setShowPage] = useState("DASHBOARD");
   
   const [fixedData, setFixedData] = useState([]);
   const [weightData, setWeightData] = useState([]);
+
   //Setting Calandar date
   const [value, setValue] = useState(new Date());
   const [datePicker, setDatePicker] = useState(dayjs(new Date()));
@@ -86,25 +37,29 @@ function App() {
     fat: 90,
     calories: 1800
   })
+
   const [fixedFoodData, setFixedFoodData] = useState({});
   const [foodMacro, setFoodMacro] = useState([])
+
   // macroData added dropdb
   const [foodMacroSum, setFoodMacroSum] = useState({carb: 0, protein: 0, fat: 0, calories:0})
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
 
+  const apiServerUrl = process.env.REACT_APP_API_SERVER_URL
+
   //fetching food data for user
   useEffect(() => {
-    fetch(`http://localhost:8000/api/users/${1}/food`)
+    fetch(`${apiServerUrl}/api/users/${1}/food`)
       .then(res => res.json())
       .then(data => {
         console.log(data)
         setFixedFoodData(data);
       })
-  }, [])
+  }, [apiServerUrl])
 
   //fetching weight data for user
   useEffect(() => {
-    fetch(`http://localhost:8000/api/users/${1}/weight`)
+    fetch(`${apiServerUrl}/api/users/${1}/weight`)
       .then(res => res.json())
       .then(data => {
         console.log("data",data)
@@ -116,7 +71,7 @@ function App() {
           return new Date(b.x) - new Date(a.x);
         });
         setFixedData(sortedWeights)})
-  }, []);
+  }, [apiServerUrl]);
 
   useEffect(() => {
     const datePicked = datePicker['$d']
@@ -189,6 +144,8 @@ function App() {
 
           remainingMacro={remainingMacro}
           setRemainingMacro={setRemainingMacro}
+
+          apiServerUrl={apiServerUrl}
         />
       }
       {showPage === "WEIGHT" && 
@@ -202,6 +159,8 @@ function App() {
           setValue={setValue}
           dateSelected={dateSelected}
           setDateSelected={setDateSelected}
+
+          apiServerUrl={apiServerUrl}
         />
       }
       {showPage === "FOOD" && 
@@ -227,6 +186,8 @@ function App() {
           fixedFoodData={fixedFoodData}
           setFixedFoodData={setFixedFoodData}
           datePickerString={datePickerString}
+
+          apiServerUrl={apiServerUrl}
         />
       }
     </Box>
