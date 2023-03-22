@@ -9,7 +9,8 @@ import WeightTable from "./WeightTable";
 import WeightChart from "./WeightChart";
 
 export default function WeightDisplay(props) {
-    const {value, setValue, weightData, setWeightData, fixedData, setFixedData, dateSelected, setDateSelected} = props;
+    const {value, setValue, weightData, setWeightData, fixedData, 
+      setFixedData, dateSelected, setDateSelected, apiServerUrl} = props;
 
     return (
     <Box 
@@ -29,6 +30,8 @@ export default function WeightDisplay(props) {
         setWeightData={setWeightData} 
         setFixedData={setFixedData} 
         weightData={weightData} 
+
+        apiServerUrl={apiServerUrl}
       />
       <WeightChart
         value={value}
@@ -39,6 +42,8 @@ export default function WeightDisplay(props) {
       <WeightTable
       weightData={weightData}
       setFixedData={setFixedData}
+
+      apiServerUrl={apiServerUrl}
       />
     </Box>
   );

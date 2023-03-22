@@ -5,13 +5,10 @@ import AddIcon from '@mui/icons-material/Add';
 
 export default function QueryTable(props) {
 
-  const { queryFoodData, tempTestingData, setFoodMacro, foodMacro, showAlert, 
-    setShowAlert, setFoodMacroSum, setFixedFoodData, fixedFoodData, datePickerString} = props;
+  const { queryFoodData, setFoodMacro, foodMacro, 
+    setShowAlert, setFixedFoodData, datePickerString, apiServerUrl} = props;
 
   const [gridData, setGridData] = useState([]);
-
-  //set serving size and change grid data
-  const [servingSize, setServingSize] = useState(1);
 
   function cleanQueryFoodData(foodData) {
     setGridData([])
@@ -88,7 +85,7 @@ export default function QueryTable(props) {
   )
 
   const addFoodData = async(data, date) => {
-    fetch(`http://localhost:8000/api/users/${1}/food/`, {
+    fetch(`${apiServerUrl}/api/users/${1}/food/`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
