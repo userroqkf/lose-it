@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SidebarItem from "./SidebarItem";
-import LetterAvatars from "./LetterAvatars";
-import Dashboard from "./Dashboard";
+import Avatar from '@mui/material/Avatar';
+import { useAuth0 } from "@auth0/auth0-react";
 
 import {
   Button,
@@ -10,12 +10,9 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Typography,
-  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { flexbox } from "@mui/system";
 
 export default function Sidebar(props) {
   const { drawerWidth, setShowPage } = props;
@@ -23,6 +20,16 @@ export default function Sidebar(props) {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const { logout, user } = useAuth0();
+
+  const handleLogout = () => {
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
 
   return (
@@ -60,7 +67,7 @@ export default function Sidebar(props) {
             // onClick={handleMenu}
             color="inherit"
           >
-            <LetterAvatars name={props.name} />
+            <Avatar src={user.picture} alt="temp iamge"/>
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -86,13 +93,12 @@ export default function Sidebar(props) {
           }}
         >
           <Button>
-            <LetterAvatars name={props.name} />
-            <Typography>{props.name}</Typography>
+            <Avatar src={user.picture} alt="temp iamge"/>
           </Button>
           <SidebarItem 
             setShowPage={setShowPage}
           />
-          <Button>Logout</Button>
+          <Button onClick={handleLogout}>Logout</Button>
         </Drawer>
         <Drawer
           variant="permanent"
@@ -111,14 +117,13 @@ export default function Sidebar(props) {
         >
           <Box>
             <Button>
-              <LetterAvatars name={props.name} />
-              <Typography>{props.name}</Typography>
+              <Avatar src={user.picture} alt="temp iamge"/>
             </Button>
             <SidebarItem 
               setShowPage={setShowPage}
             />
           </Box>
-          <Button>Logout</Button>
+          <Button onClick={handleLogout}>Logout</Button>
         </Drawer>
       </Box>
     </>

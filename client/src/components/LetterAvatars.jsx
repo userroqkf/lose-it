@@ -1,5 +1,4 @@
 import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
 
 function stringToColor(string) {
   let hash = 0;

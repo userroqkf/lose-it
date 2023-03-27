@@ -1,13 +1,11 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
-
-import DeleteCheckBox from "../DeleteCheckBox";
 
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function FoodTable(props) {
 
-  const {tempTestingData, setFoodMacro, setShowAlert,setFixedFoodData, fixedFoodData, 
+  const {foodMacro, setFoodMacro, setShowAlert,setFixedFoodData, fixedFoodData, 
     datePickerString, apiServerUrl} = props;
 
 
@@ -34,18 +32,19 @@ export default function FoodTable(props) {
       ],
     },
   ]
-  const deleteFoodData = (id) => {
-    fetch(`${apiServerUrl}/api/users/${1}/food/delete`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({foodId: id})
-    })
-  }
 
   const deleteItem = useCallback(
     (id) => {
+      const deleteFoodData = (id) => {
+        fetch(`${apiServerUrl}/api/users/${1}/food/delete`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({foodId: id})
+        })
+      }
+
       setTimeout(async() => {
         await deleteFoodData(id);
         setFoodMacro((prevRows) => prevRows.filter((row) => row.id !== id));
@@ -59,32 +58,15 @@ export default function FoodTable(props) {
         })
       });
     },
-    [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, datePickerString, deleteFoodData],
+    [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, datePickerString, apiServerUrl]
   );
 
   return (
     <DataGrid
-    //loading overlay
-      // loading={true}
-      rows={tempTestingData}
+      rows={foodMacro}
       columns={columns}
       pageSize={5}
       rowsPerPageOptions={[5]}
-      // checkboxSelection
-      // experimentalFeatures={{ newEditingApi: true }}
-      // components={{
-      //   BaseCheckbox: DeleteCheckBox
-      // }}
-      // onSelectionModelChange={(data) => {
-      //   // deleteData(data[0]);
-      // }}
-      // selectionModel={selectionModel}
-      // sx={{
-      //   "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer":
-      //     {
-      //       display: "none",
-      //     },
-      // }}
     />
   )
 }

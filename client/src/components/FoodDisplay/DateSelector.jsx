@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Box, IconButton, TextField } from "@mui/material";
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -6,11 +5,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-
-
 export default function DateSelector(props) {
   const {datePicker, setDatePicker} = props;
-
 
   const changeDate = (e, value) => {
     if (value === "add") {

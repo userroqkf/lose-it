@@ -84,18 +84,20 @@ export default function QueryTable(props) {
       }, []
   )
 
-  const addFoodData = async(data, date) => {
-    fetch(`${apiServerUrl}/api/users/${1}/food/`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({foodData: data, date})
-    })
-  }
 
   const addItem = useCallback(
     (params) => {
+
+      const addFoodData = async(data, date) => {
+        fetch(`${apiServerUrl}/api/users/${1}/food/`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({foodData: data, date})
+        })
+      }
+
       setTimeout(async () => {
         if (!(params.row.servingSize > 0)) {
           setShowAlert((prev) => { return {...prev, message:"Please Specify Serving Size", open: true}})
@@ -116,7 +118,7 @@ export default function QueryTable(props) {
         }
       });
     },
-    [setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData],
+    [setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData, apiServerUrl],
   );
 
   const columns = [

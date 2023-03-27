@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Route, Routes, Navigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import "./App.css";
 
 import WeightDisplay from "./components/WeightDisplay/WeightDisplay";
-import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
 import FoodDisplay from "./components/FoodDisplay/FoodDisplay";
+import { StartPage } from "./components/StartPage";
+import { PageLoader } from "./components/PageLoader";
 import dayjs from "dayjs";
-//Functions needed to created dummy data
+
 
 function App() {
-  const drawerWidth = 240;
-  const [showPage, setShowPage] = useState("DASHBOARD");
   
   const [fixedData, setFixedData] = useState([]);
   const [weightData, setWeightData] = useState([]);
@@ -46,23 +46,64 @@ function App() {
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
 
   const apiServerUrl = process.env.REACT_APP_API_SERVER_URL
+  const { getAccessTokenSilently, isLoading, isAuthenticated, user} = useAuth0();
 
   //fetching food data for user
+  console.log(user)
+
   useEffect(() => {
-    fetch(`${apiServerUrl}/api/users/${1}/food`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        setFixedFoodData(data);
+    const checkUserExists = async () => {
+      const accessToken = await getAccessTokenSilently();
+      fetch(`${apiServerUrl}/api/user/:userId`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `bearer ${accessToken}`,
+        },
       })
-  }, [apiServerUrl])
+        .then(res => res.json())
+    }
+    const userExists = checkUserExists();
+    console.log(userExists, "userExists check");
+  })
+
+  useEffect(() => {
+    const getFoodData = async () => {
+      const accessToken = await getAccessTokenSilently();
+      console.log("access tokeb", accessToken);
+      fetch(`${apiServerUrl}/api/users/${1}/food`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `bearer ${accessToken}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          setFixedFoodData(data);
+        })
+    }
+    getFoodData()
+
+    // fetch(`${apiServerUrl}/api/users/${1}/food`)
+    // .then(res => res.json())
+    // .then(data => {
+    // setFixedFoodData(data);
+    // })
+
+  }, [apiServerUrl, getAccessTokenSilently])
 
   //fetching weight data for user
   useEffect(() => {
-    fetch(`${apiServerUrl}/api/users/${1}/weight`)
+    const getWeightData = async () => {
+      const accessToken = await getAccessTokenSilently();
+      console.log(accessToken);
+      fetch(`${apiServerUrl}/api/users/${1}/weight`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `bearer ${accessToken}`,
+        },
+      })
       .then(res => res.json())
       .then(data => {
-        console.log("data",data)
         const weights = data.map(row => ({
           x: new Date(row.x),
           y: row.y
@@ -71,7 +112,22 @@ function App() {
           return new Date(b.x) - new Date(a.x);
         });
         setFixedData(sortedWeights)})
-  }, [apiServerUrl]);
+    }
+    getWeightData()
+
+    // fetch(`${apiServerUrl}/api/users/${1}/weight`)
+    // .then(res => res.json())
+    // .then(data => {
+    // const weights = data.map(row => ({
+    // x: new Date(row.x),
+    // y: row.y
+    // }));
+    // const sortedWeights = weights.sort((a, b) => {
+    // return new Date(b.x) - new Date(a.x);
+    // });
+    // setFixedData(sortedWeights)})
+
+  }, [apiServerUrl, getAccessTokenSilently]);
 
   useEffect(() => {
     const datePicked = datePicker['$d']
@@ -81,8 +137,6 @@ function App() {
   }, [datePicker])
 
   useEffect(() => {
-    console.log("loop1");
-    console.log("date picker string",datePickerString)
     if  ( fixedFoodData.hasOwnProperty(datePickerString) ) {
       setFoodMacro(fixedFoodData[datePickerString])
     } else {
@@ -91,7 +145,6 @@ function App() {
   },[datePicker,fixedFoodData, datePickerString])
 
   useEffect(() => {
-    console.log("loop2");
     if  ( Object.keys(foodMacro).length !== 0 ) {
       const macroSum =  foodMacro.reduce((acc, curr) => (
                                         {
@@ -112,85 +165,66 @@ function App() {
     setRemainingMacro([macroData, foodMacroSum])
   }, [macroData, foodMacroSum])
 
+  const drawerWidth = 240;
+
+  if (isLoading) {
+    return (
+      <div className="page-layout">
+        <PageLoader />
+      </div>
+    );
+  }
+
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Sidebar 
-        name={"John Kim"} 
-        drawerWidth={drawerWidth} 
-        setShowPage={setShowPage}
-      />
-      {showPage === "DASHBOARD" &&
-        <Dashboard 
-          drawerWidth={drawerWidth}
+    <Routes>
+      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" />:<StartPage/>}/>
+      <Route path="/*" element={isAuthenticated ? <Navigate to="/dashboard" />: <Navigate to="/" />}/>
+      <Route path="/dashboard" element={
+        <Dashboard
           value={value}
+          drawerWidth={drawerWidth}
           weightData={weightData}
           setWeightData={setWeightData}
           fixedData={fixedData}
           datePicker={datePicker}
-          setValue={setValue}
           setDatePicker={setDatePicker}
+          setValue={setValue}
           dateSelected={dateSelected}
           setDateSelected={setDateSelected}
-          setShowPage={setShowPage}
-
-          macroData={macroData}
-          setMacroData={setMacroData}
-
           foodMacroSum={foodMacroSum}
-          foodMacro={foodMacro}
-          setFoodMacro={setFoodMacro}
-          setFoodMacroSum={setFoodMacroSum}
-
           remainingMacro={remainingMacro}
-          setRemainingMacro={setRemainingMacro}
-
-          apiServerUrl={apiServerUrl}
         />
       }
-      {showPage === "WEIGHT" && 
+      />
+      <Route path="/weight" element={
         <WeightDisplay 
-          drawerWidth={drawerWidth}
+          value={value}
+          setValue={setValue}
+          weightData={weightData}
+          setWeightData={setWeightData}
           fixedData={fixedData}
           setFixedData={setFixedData}
-          weightData={weightData}
-          setWeightData={setWeightData}
-          value={value}
-          setValue={setValue}
           dateSelected={dateSelected}
           setDateSelected={setDateSelected}
-
-          apiServerUrl={apiServerUrl}
-        />
-      }
-      {showPage === "FOOD" && 
+      />
+    } />
+      <Route path="/food" element={
         <FoodDisplay 
           drawerWidth={drawerWidth} 
-          setWeightData={setWeightData}
-          value={value}
-          setValue={setValue}
-          datePicker={datePicker}
+          datePicker={datePicker} 
           setDatePicker={setDatePicker}
-
-          macroData={macroData}
-          setMacroData={setMacroData}
-
-          foodMacroSum={foodMacroSum}
-          foodMacro={foodMacro}
-          setFoodMacro={setFoodMacro}
-          setFoodMacroSum={setFoodMacroSum}
-
+          foodMacroSum={foodMacroSum} 
+          foodMacro={foodMacro} 
+          setFoodMacro={setFoodMacro} 
           remainingMacro={remainingMacro}
-          setRemainingMacro={setRemainingMacro}
-
-          fixedFoodData={fixedFoodData}
-          setFixedFoodData={setFixedFoodData}
+          setFixedFoodData={setFixedFoodData} 
+          fixedFoodData={fixedFoodData} 
           datePickerString={datePickerString}
-
           apiServerUrl={apiServerUrl}
-        />
-      }
-    </Box>
+      />
+        } />
+    </Routes>
   );
 }
 

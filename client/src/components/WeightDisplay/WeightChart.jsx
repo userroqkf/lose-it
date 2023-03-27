@@ -56,7 +56,7 @@ useEffect(() => {
       return xAxis[0] <= data.x && data.x <= xAxis[1];
     })
   );
-}, [xAxis, fixedData, weightData, setWeightData]);
+}, [xAxis, fixedData, setWeightData]);
 
 
   const chartData = {
