@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import {
   TextField,
@@ -13,13 +13,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import dayjs from "dayjs";
-
 export default function WeightMonthSelector(props) {
 
   const {setValue, dateSelected, setDateSelected} = props;
 
   useEffect(() => {
+    console.log("dateSelected");
     setValue(dateSelected["$d"])
   }, [dateSelected, setValue])
 

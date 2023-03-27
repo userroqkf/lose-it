@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Doughnut } from "react-chartjs-2";
 
 import {Box} from "@mui/material"
@@ -9,10 +9,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function MacroChart(props) {
 
-// how to clean props {protien , , , } 
-// if that is the case have state for both remaining and consumed
+  const { macroName,foodMacroSum, remainingMacro} = props;
 
-  const { macroName, macroData, setMacroData, foodMacroSum, setFoodMacroSum, remainingMacro, setRemainingMacro} = props;
   const chartRef = useRef();
   const remaininngCalc = Math.round(remainingMacro[0][macroName] - remainingMacro[1][macroName])
   const remaining = isNaN(remaininngCalc) ? 0 : remaininngCalc 
@@ -45,7 +43,7 @@ export default function MacroChart(props) {
     cutout: "65%",
     remaining
   }
-  // const test = "300kcal"
+
   const plugins = [{
     afterDraw: function(chart) {
     const width = chart.width,height = chart.height,ctx = chart.ctx;

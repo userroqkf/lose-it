@@ -6,9 +6,31 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 
+const { auth } = require('express-oauth2-jwt-bearer');
+
+const audience = process.env.AUDIENCE;
+const issuerBaseURL = process.env.ISSUERBASEURL;
+const tokenSigningAlg = process.env.TOKENSIGNINGALG;
+
+console.log("audience issuebaseurl, tokensigningalg",audience, issuerBaseURL, tokenSigningAlg);
+
+// const jwtCheck = auth({
+//   audience: audience,
+//   issuerBaseURL: issuerBaseURL,
+//   tokenSigningAlg: tokenSigningAlg
+// });
+
+// const jwtCheck = auth({
+//   audience: 'https://lose-it.api.com',
+//   issuerBaseURL: 'https://dev-3wg0p5oh0fp28tqe.us.auth0.com/',
+//   tokenSigningAlg: 'RS256'
+// });
+// console.log(jwtCheck, "jwtCheck");
+
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
+// app.use(jwtCheck);
 
 const pool = new Pool({
   host: 'localhost',
@@ -17,8 +39,8 @@ const pool = new Pool({
   database: 'loseit'
 });
 
-// const API_KEY = process.env.NODE_ENV;
-const API_KEY = "s99Gif3tGh1LNr63BgQULwOxS2zveA4k81MHoTm8";
+const API_KEY = process.env.NODE_ENV;
+// const API_KEY = "s99Gif3tGh1LNr63BgQULwOxS2zveA4k81MHoTm8";
 
 //Need to refactor this into another file later
 const getFood = async(userId) => {
@@ -123,9 +145,53 @@ const deleteFood = async(userId, foodId) => {
   return result;
 };
 
+const addUser = async(userId, email, username) => {
+  const query = `
+    INSERT INTO users(email, username, user_id)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
+  console.log("adding user to db",userId, email, username);
+  const { result } = await pool.query(query, [email, username, userId]);
+  return result;
+};
+
+const userExists = async(userId) => {
+  const query = `
+    SELECT * from users
+    WHERE user_id = $1
+  `;
+  const {result} = await pool.query(query, [userId]);
+  return result;
+};
+
+app.get("/api/user/:userId"), async(req, res) => {
+  console.log("test");
+  const userId = req.params.userId;
+  await userExists(userId)
+    .then(user => res.json(user))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({error: 'Internal server error'});
+    });
+};
+
+app.post("/api/user/register"), async(req, res) => {
+  const userId = req.body.userId;
+  const email = req.body.email;
+  const username = req.body.username;
+  console.log("register",userId, email, username);
+  await addUser(userId, email, username)
+    .then(user => res.josn(user))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({error: 'Internal server error'});
+    });
+};
+
 app.get("/api/users/:userId/weight", async(req, res) => {
   const userId = req.params.userId;
-  await getWeight(userId,)
+  await getWeight(userId)
     .then((weight) => res.json(weight))
     .catch((err) => {
       console.log(err);

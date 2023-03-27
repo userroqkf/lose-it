@@ -13,10 +13,10 @@ TRUNCATE TABLE foods RESTART IDENTITY;
 
 
 
-INSERT INTO users (first_name, last_name, email, password) 
-VALUES ('John', 'Doe', 'john.doe@example.com', 'password123'),
-      ('Jane', 'Doe', 'jane.doe@example.com', 'password456'),
-      ('Bob', 'Smith', 'bob.smith@example.com', 'password789');
+INSERT INTO users (email, username, user_id) 
+VALUES ('john.doe@example.com','username1', 'ajdifjadi'),
+      ('jane.doe@example.com','username2', 'jidia'),
+      ('bob.smith@example.com','username3', 'aaadfe');
 
 INSERT INTO foods (owner_id, food_id, brand, food, carb, protein, fat, calories, per_serving, serving_size_unit, serving_size, date) 
 VALUES 

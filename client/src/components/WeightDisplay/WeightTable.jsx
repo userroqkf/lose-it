@@ -3,12 +3,8 @@ import { Box } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import DeleteCheckBox from "../DeleteCheckBox";
-
 export default function WeightTable(props) {
   const { weightData, setFixedData, apiServerUrl } = props;
-  // Keep track of data grid row selection
-  const [selectionModel, setSelectionModel] = useState([]);
 
   function getRowById(rowId) {
     return gridData.filter((data) => data.id === rowId);
@@ -41,7 +37,6 @@ export default function WeightTable(props) {
         return data.x.toDateString() !== rowDataDate.toDateString();
       });
     });
-    setSelectionModel([]);
   }
 
   // GridData Data
