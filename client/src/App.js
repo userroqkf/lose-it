@@ -7,9 +7,14 @@ import "./App.css";
 import WeightDisplay from "./components/WeightDisplay/WeightDisplay";
 import Dashboard from "./components/Dashboard";
 import FoodDisplay from "./components/FoodDisplay/FoodDisplay";
-import { StartPage } from "./components/StartPage";
+
+
+// import { StartPage } from "./components/StartPage";
+import HomePage from "./components/HomePage/HomePage";
+
 import { PageLoader } from "./components/PageLoader";
 import dayjs from "dayjs";
+import { Box } from "@mui/material";
 
 
 function App() {
@@ -32,10 +37,10 @@ function App() {
 
   //MacroChart Data (update whenever fixedData changes)
   const [macroData, setMacroData] = useState({
-    protein: 160,
-    carb: 120,
-    fat: 90,
-    calories: 1800
+    protein: 140,
+    carb: 123,
+    fat: 76,
+    calories: 1700
   })
 
   const [fixedFoodData, setFixedFoodData] = useState({});
@@ -52,8 +57,10 @@ function App() {
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    if (!isLoading) setUserData(user)
-  }, [isLoading,user])
+    if (!isLoading && isAuthenticated) {
+      setUserData({...user, sub: user.sub.split('|')[1]})
+    }
+  }, [isLoading,user, isAuthenticated])
 
   useEffect(() => {
     const getFoodData = async () => {
@@ -158,16 +165,24 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="page-layout">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh'
+        }}
+      >
         <PageLoader />
-      </div>
+      </Box>
     );
   }
 
 
   return (
     <Routes>
-      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" />:<StartPage/>}/>
+      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" />:<HomePage/>}/>
       <Route path="/*" element={isAuthenticated ? <Navigate to="/dashboard" />: <Navigate to="/" />}/>
       <Route path="/dashboard" element={
         <Dashboard

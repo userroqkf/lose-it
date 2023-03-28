@@ -14,7 +14,7 @@ export default function SidebarItem(props) {
   return (
     <List>
       {["dashboard", "food", "weight"].map((text, index) => (
-        <NavLink key={index} to={`/${text}`}>
+        <NavLink key={index} to={`/${text}`} style={{ textDecoration: 'none' }}>
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
