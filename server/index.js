@@ -136,57 +136,15 @@ const addFood = async(userId, foodData, date) => {
   return result;
 };
 
-const deleteFood = async(userId, foodId) => {
+const deleteFood = async(userId, foodId, inputDate) => {
   const query = `
     DELETE FROM foods
-    WHERE owner_id = $1 AND id = $2;
+    WHERE owner_id = $1 AND food_id = $2 AND date = $3;
   `;
-  const {result} = await pool.query(query, [userId, foodId]);
+  console.log("input data", userId, foodId, inputDate);
+  console.log(typeof userId, typeof foodId, typeof inputDate);
+  const {result} = await pool.query(query, [userId, foodId,inputDate]);
   return result;
-};
-
-const addUser = async(userId, email, username) => {
-  const query = `
-    INSERT INTO users(email, username, user_id)
-    VALUES ($1, $2, $3)
-    RETURNING *;
-  `;
-  console.log("adding user to db",userId, email, username);
-  const { result } = await pool.query(query, [email, username, userId]);
-  return result;
-};
-
-const userExists = async(userId) => {
-  const query = `
-    SELECT * from users
-    WHERE user_id = $1
-  `;
-  const {result} = await pool.query(query, [userId]);
-  return result;
-};
-
-app.get("/api/user/:userId"), async(req, res) => {
-  console.log("test");
-  const userId = req.params.userId;
-  await userExists(userId)
-    .then(user => res.json(user))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({error: 'Internal server error'});
-    });
-};
-
-app.post("/api/user/register"), async(req, res) => {
-  const userId = req.body.userId;
-  const email = req.body.email;
-  const username = req.body.username;
-  console.log("register",userId, email, username);
-  await addUser(userId, email, username)
-    .then(user => res.josn(user))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({error: 'Internal server error'});
-    });
 };
 
 app.get("/api/users/:userId/weight", async(req, res) => {
@@ -244,13 +202,15 @@ app.post("/api/users/:userId/food", async(req, res) => {
 app.post("/api/users/:userId/food/delete", async(req, res) => {
   const userId = req.params.userId;
   const foodId = req.body.foodId;
-  const {result} = await deleteFood(userId, foodId)
+  const inputDate = req.body.inputDate;
+  const {result} = await deleteFood(userId, foodId, inputDate)
     .then(food => res.json(food));
   return result;
 });
 
 app.get("/search_food", async(req, res) => {
   const query = req.query.food;
+  console.log(query);
   fetch(`https://api.nal.usda.gov/fdc/v1/foods/search/?api_key=${API_KEY}&query=${query}`)
     .then(res =>{
       if (res.ok) {

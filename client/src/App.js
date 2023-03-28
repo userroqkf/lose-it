@@ -7,9 +7,14 @@ import "./App.css";
 import WeightDisplay from "./components/WeightDisplay/WeightDisplay";
 import Dashboard from "./components/Dashboard";
 import FoodDisplay from "./components/FoodDisplay/FoodDisplay";
-import { StartPage } from "./components/StartPage";
+
+
+// import { StartPage } from "./components/StartPage";
+import HomePage from "./components/HomePage/HomePage";
+
 import { PageLoader } from "./components/PageLoader";
 import dayjs from "dayjs";
+import { Box } from "@mui/material";
 
 
 function App() {
@@ -32,10 +37,10 @@ function App() {
 
   //MacroChart Data (update whenever fixedData changes)
   const [macroData, setMacroData] = useState({
-    protein: 160,
-    carb: 120,
-    fat: 90,
-    calories: 1800
+    protein: 140,
+    carb: 123,
+    fat: 76,
+    calories: 1700
   })
 
   const [fixedFoodData, setFixedFoodData] = useState({});
@@ -46,31 +51,22 @@ function App() {
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
 
   const apiServerUrl = process.env.REACT_APP_API_SERVER_URL
+  console.log("api url", apiServerUrl);
   const { getAccessTokenSilently, isLoading, isAuthenticated, user} = useAuth0();
 
-  //fetching food data for user
-  console.log(user)
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    const checkUserExists = async () => {
-      const accessToken = await getAccessTokenSilently();
-      fetch(`${apiServerUrl}/api/user/:userId`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `bearer ${accessToken}`,
-        },
-      })
-        .then(res => res.json())
+    if (!isLoading && isAuthenticated) {
+      setUserData({...user, sub: user.sub.split('|')[1]})
     }
-    const userExists = checkUserExists();
-    console.log(userExists, "userExists check");
-  })
+  }, [isLoading,user, isAuthenticated])
 
   useEffect(() => {
     const getFoodData = async () => {
       const accessToken = await getAccessTokenSilently();
       console.log("access tokeb", accessToken);
-      fetch(`${apiServerUrl}/api/users/${1}/food`, {
+      fetch(`${apiServerUrl}/api/users/${userData.sub}/food`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `bearer ${accessToken}`,
@@ -81,22 +77,22 @@ function App() {
           setFixedFoodData(data);
         })
     }
-    getFoodData()
+    // if (!isLoading) getFoodData()
 
     // fetch(`${apiServerUrl}/api/users/${1}/food`)
     // .then(res => res.json())
     // .then(data => {
     // setFixedFoodData(data);
     // })
-
-  }, [apiServerUrl, getAccessTokenSilently])
+    getFoodData()
+  }, [apiServerUrl, getAccessTokenSilently, isLoading, userData])
 
   //fetching weight data for user
   useEffect(() => {
     const getWeightData = async () => {
       const accessToken = await getAccessTokenSilently();
       console.log(accessToken);
-      fetch(`${apiServerUrl}/api/users/${1}/weight`, {
+      fetch(`${apiServerUrl}/api/users/${userData.sub}/weight`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `bearer ${accessToken}`,
@@ -113,7 +109,7 @@ function App() {
         });
         setFixedData(sortedWeights)})
     }
-    getWeightData()
+    getWeightData();
 
     // fetch(`${apiServerUrl}/api/users/${1}/weight`)
     // .then(res => res.json())
@@ -127,7 +123,7 @@ function App() {
     // });
     // setFixedData(sortedWeights)})
 
-  }, [apiServerUrl, getAccessTokenSilently]);
+  }, [apiServerUrl, getAccessTokenSilently, userData, isLoading]);
 
   useEffect(() => {
     const datePicked = datePicker['$d']
@@ -169,16 +165,24 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="page-layout">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh'
+        }}
+      >
         <PageLoader />
-      </div>
+      </Box>
     );
   }
 
 
   return (
     <Routes>
-      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" />:<StartPage/>}/>
+      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" />:<HomePage/>}/>
       <Route path="/*" element={isAuthenticated ? <Navigate to="/dashboard" />: <Navigate to="/" />}/>
       <Route path="/dashboard" element={
         <Dashboard
@@ -207,6 +211,8 @@ function App() {
           setFixedData={setFixedData}
           dateSelected={dateSelected}
           setDateSelected={setDateSelected}
+          user={userData}
+          apiServerUrl={apiServerUrl}
       />
     } />
       <Route path="/food" element={
@@ -222,6 +228,7 @@ function App() {
           fixedFoodData={fixedFoodData} 
           datePickerString={datePickerString}
           apiServerUrl={apiServerUrl}
+          user={userData}
       />
         } />
     </Routes>

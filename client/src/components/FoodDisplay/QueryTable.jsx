@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 export default function QueryTable(props) {
 
   const { queryFoodData, setFoodMacro, foodMacro, 
-    setShowAlert, setFixedFoodData, datePickerString, apiServerUrl} = props;
+    setShowAlert, setFixedFoodData, datePickerString, apiServerUrl, user} = props;
 
   const [gridData, setGridData] = useState([]);
 
@@ -89,12 +89,12 @@ export default function QueryTable(props) {
     (params) => {
 
       const addFoodData = async(data, date) => {
-        fetch(`${apiServerUrl}/api/users/${1}/food/`, {
+        fetch(`${apiServerUrl}/api/users/${user.sub}/food/`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({foodData: data, date})
+          body: JSON.stringify({foodData: data, date, userId: "userId"})
         })
       }
 
@@ -118,7 +118,7 @@ export default function QueryTable(props) {
         }
       });
     },
-    [setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData, apiServerUrl],
+    [setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData, apiServerUrl, user],
   );
 
   const columns = [

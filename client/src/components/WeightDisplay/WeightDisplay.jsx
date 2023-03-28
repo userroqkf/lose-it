@@ -13,7 +13,7 @@ import { PageLoader } from "../PageLoader";
 
 const WeightDisplay = (props) => {
     const {value, setValue, weightData, setWeightData, fixedData, 
-      setFixedData, dateSelected, setDateSelected, apiServerUrl} = props;
+      setFixedData, dateSelected, setDateSelected, apiServerUrl, user} = props;
 
     return (
       <PageLayout>
@@ -33,6 +33,7 @@ const WeightDisplay = (props) => {
             setFixedData={setFixedData} 
             weightData={weightData} 
             apiServerUrl={apiServerUrl}
+            user={user}
           />
           <WeightChart
             value={value}
@@ -44,6 +45,7 @@ const WeightDisplay = (props) => {
           weightData={weightData}
           setFixedData={setFixedData}
           apiServerUrl={apiServerUrl}
+          user={user}
           />
         </Box>
       </PageLayout>

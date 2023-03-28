@@ -38,7 +38,7 @@ const FoodDisplay = (props) => {
 
   const { drawerWidth, datePicker, setDatePicker, foodMacroSum, foodMacro, 
     setFoodMacro, remainingMacro, setFixedFoodData, fixedFoodData, 
-    datePickerString,apiServerUrl } = props;
+    datePickerString,apiServerUrl, user } = props;
   // date picker for foodDisplay
   
   const [ queryFood, setQueryFood ] = useState("");
@@ -156,6 +156,7 @@ const FoodDisplay = (props) => {
               setFixedFoodData={setFixedFoodData} 
               datePickerString={datePickerString}
               apiServerUrl={apiServerUrl}
+              user={user}
               
               /> : 
               <FoodTable
@@ -166,6 +167,7 @@ const FoodDisplay = (props) => {
                 fixedFoodData={fixedFoodData} 
                 datePickerString={datePickerString} 
                 apiServerUrl={apiServerUrl}
+                user={user}
               />
             }
           </Box>
