@@ -1,6 +1,8 @@
 import { useState } from "react";
 import SidebarItem from "./SidebarItem";
 import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
+
 import { useAuth0 } from "@auth0/auth0-react";
 
 import {
@@ -23,6 +25,7 @@ export default function Sidebar(props) {
   };
 
   const { logout, user } = useAuth0();
+  console.log(user.nickname);
 
   const handleLogout = () => {
     logout({
@@ -92,6 +95,7 @@ export default function Sidebar(props) {
             },
           }}
         >
+          <Toolbar />
           <Button>
             <Avatar src={user.picture} alt="temp iamge"/>
           </Button>
@@ -116,6 +120,7 @@ export default function Sidebar(props) {
           open
         >
           <Box>
+          <Toolbar />
             <Button>
               <Avatar src={user.picture} alt="temp iamge"/>
             </Button>
@@ -123,7 +128,13 @@ export default function Sidebar(props) {
               setShowPage={setShowPage}
             />
           </Box>
-          <Button onClick={handleLogout}>Logout</Button>
+          <Box
+            sx={{
+              margin: "2em auto"
+            }}
+          >
+            <Button onClick={handleLogout}>Logout</Button>
+          </Box>
         </Drawer>
       </Box>
     </>
