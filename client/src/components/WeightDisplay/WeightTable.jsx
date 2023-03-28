@@ -4,7 +4,7 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function WeightTable(props) {
-  const { weightData, setFixedData, apiServerUrl } = props;
+  const { weightData, setFixedData, apiServerUrl, user } = props;
 
   function getRowById(rowId) {
     return gridData.filter((data) => data.id === rowId);
@@ -12,10 +12,11 @@ export default function WeightTable(props) {
 
   //Delete data from database
   const deleteWeightData  = async(date) => {
+    console.log("date", date, date.toLocaleDateString());
     const [day, month, year] = date.toLocaleDateString().split('/')
     const inputDateCleaned = `${year}-${month}-${day}`
     console.log(inputDateCleaned);
-    const res = await fetch(`${apiServerUrl}/api/users/${1}/weight/delete`, {
+    const res = await fetch(`${apiServerUrl}/api/users/${user.sub}/weight/delete`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'

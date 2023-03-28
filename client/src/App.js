@@ -46,31 +46,20 @@ function App() {
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
 
   const apiServerUrl = process.env.REACT_APP_API_SERVER_URL
+  console.log("api url", apiServerUrl);
   const { getAccessTokenSilently, isLoading, isAuthenticated, user} = useAuth0();
 
-  //fetching food data for user
-  console.log(user)
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    const checkUserExists = async () => {
-      const accessToken = await getAccessTokenSilently();
-      fetch(`${apiServerUrl}/api/user/:userId`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `bearer ${accessToken}`,
-        },
-      })
-        .then(res => res.json())
-    }
-    const userExists = checkUserExists();
-    console.log(userExists, "userExists check");
-  })
+    if (!isLoading) setUserData(user)
+  }, [isLoading,user])
 
   useEffect(() => {
     const getFoodData = async () => {
       const accessToken = await getAccessTokenSilently();
       console.log("access tokeb", accessToken);
-      fetch(`${apiServerUrl}/api/users/${1}/food`, {
+      fetch(`${apiServerUrl}/api/users/${userData.sub}/food`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `bearer ${accessToken}`,
@@ -81,22 +70,22 @@ function App() {
           setFixedFoodData(data);
         })
     }
-    getFoodData()
+    // if (!isLoading) getFoodData()
 
     // fetch(`${apiServerUrl}/api/users/${1}/food`)
     // .then(res => res.json())
     // .then(data => {
     // setFixedFoodData(data);
     // })
-
-  }, [apiServerUrl, getAccessTokenSilently])
+    getFoodData()
+  }, [apiServerUrl, getAccessTokenSilently, isLoading, userData])
 
   //fetching weight data for user
   useEffect(() => {
     const getWeightData = async () => {
       const accessToken = await getAccessTokenSilently();
       console.log(accessToken);
-      fetch(`${apiServerUrl}/api/users/${1}/weight`, {
+      fetch(`${apiServerUrl}/api/users/${userData.sub}/weight`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `bearer ${accessToken}`,
@@ -113,7 +102,7 @@ function App() {
         });
         setFixedData(sortedWeights)})
     }
-    getWeightData()
+    getWeightData();
 
     // fetch(`${apiServerUrl}/api/users/${1}/weight`)
     // .then(res => res.json())
@@ -127,7 +116,7 @@ function App() {
     // });
     // setFixedData(sortedWeights)})
 
-  }, [apiServerUrl, getAccessTokenSilently]);
+  }, [apiServerUrl, getAccessTokenSilently, userData, isLoading]);
 
   useEffect(() => {
     const datePicked = datePicker['$d']
@@ -207,6 +196,8 @@ function App() {
           setFixedData={setFixedData}
           dateSelected={dateSelected}
           setDateSelected={setDateSelected}
+          user={userData}
+          apiServerUrl={apiServerUrl}
       />
     } />
       <Route path="/food" element={
@@ -222,6 +213,7 @@ function App() {
           fixedFoodData={fixedFoodData} 
           datePickerString={datePickerString}
           apiServerUrl={apiServerUrl}
+          user={userData}
       />
         } />
     </Routes>

@@ -14,17 +14,17 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 
 export default function AddWeight(props) {
-  const { setWeightData, setFixedData, weightData, apiServerUrl } = props;
+  const { setWeightData, setFixedData, weightData, apiServerUrl, user} = props;
 
   const [weightInput, setWeightInput] = useState("");
   const [weightInputDate, setWeightInputDate] = useState(new Date());
   const [weightExists, setWeightExists] = useState(false);
 
-const postWeightData = async (userId, inputDate, inputWeight) => {
+const postWeightData = async (inputDate, inputWeight) => {
   console.log("input date", inputDate);
   const [day, month, year] = inputDate.toLocaleDateString().split('/')
   const inputDateCleaned = `${year}-${month}-${day}`
-  const res = await fetch(`${apiServerUrl}/api/users/${userId}/weight`, {
+  const res = await fetch(`${apiServerUrl}/api/users/${user.sub}/weight`, {
     method: "POST",
     headers: {
       'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const addData = async (data) => {
     )
 
   if (!found) {
-    await postWeightData(1, selectedInputDate, data);
+    await postWeightData(selectedInputDate, data);
     setWeightData((prev) =>
     [...prev, { x: selectedInputDate, y: data }].sort((a, b) => {
       console.log(prev)
