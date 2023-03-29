@@ -15,7 +15,7 @@ export default function HomePageContent() {
         margin:"auto"
       }}
     >
-      <Grid2 xs={6}
+      <Grid2 xs={12} sm={6}
         sx={{
           maxWidth: "50%"
         }}
@@ -31,10 +31,10 @@ export default function HomePageContent() {
           <SignUpButton/>
         </Box>
       </Grid2>
-      <Grid2 xs={6}
-        sx={{
-          maxWidth: "50%"
-        }}
+      <Grid2 lg={6} xs={0}
+        // sx={{
+        //   maxWidth: "50%"
+        // }}
       >
         <img 
           src={scale} 

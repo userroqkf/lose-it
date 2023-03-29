@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# Getting Started with LoseIt
+LoseIt is an application that aims to assist individuals in adopting a healthier lifestyle by tracking their daily caloric intake, macronutrients, and weight. By keeping track of their food intake, users can gain insight into their eating habits and make informed decisions about their diet.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Quick Demo
+![name](https://user-images.githubusercontent.com/1702215/158075475-c23004ab-827a-45ad-bdba-aee29ac5b582.mp4)
 
-## Available Scripts
+## Sample Images
 
-In the project directory, you can run:
+### Desktop View
+| Start Page | Login Page | Dashboard |
+|:---:|:---:|:---:|
+|![start page image](./readme-img/desktop/startpage.png)|![login page image](./readme-img/desktop/login.png)|![dashboard page image](./readme-img/desktop/dashboard.png)|
 
-### `npm start`
+| Weight Page | Food Page | Macro Page |
+|:---:|:---:|:---:|
+|![weight page image](./readme-img/desktop/weight.png)|![food page image](./readme-img/desktop/food.png)|![macro page image](./readme-img/desktop/macro.png)|
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Tablet View
+| Start Page | Dashboard| Sidebar|
+|:---:|:---:|:---:|
+|![start page image](./readme-img/tablet/startpage-tab.png)|![dashboard image](./readme-img/tablet/dashboard-tab.png)|![sidebar](./readme-img/tablet/sidebar-tab.png)|
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Weight Page | Food Page | Macro Page |
+|:---:|:---:|:---:|
+|![weight page image](./readme-img/tablet/weight-tab.png)|![food page image](./readme-img/tablet/food-tab.png)|![macro page image](./readme-img/tablet/macro-tab.png)|
 
-### `npm test`
+### Phone View
+| Start Page | Dashboard Top | Dashboard Bottom|
+|:---:|:---:|:---:|
+|![start page image](./readme-img/phone/startpage-phone.png)|![dashboard image](./readme-img/phone/macro-dashboard-top.png)|![sidebar](./readme-img/phone/macro-dashboard-top.png)|
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Weight Page | Food Page | Macro Page |
+|:---:|:---:|:---:|
+|![weight page image](./readme-img/phone/weight-phone.png)|![food page image](./readme-img/phone/food-phone-bot.png)|![macro page image](./readme-img/phone/macro-phone.png)| 

@@ -22,7 +22,7 @@ export default function LoginButton() {
         variant="h6"
         sx={{
           mr: 2,
-          display: { xs: 'none', md: 'flex' },
+          display: 'flex',
           fontFamily: 'Helvetica',
           fontSize: "1em",
           fontWeight: 700,
