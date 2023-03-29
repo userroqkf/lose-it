@@ -52,6 +52,7 @@ const FoodDisplay = (props) => {
   // const [queryData, setQueryData] = useState({})
   const debounceQuery = useDebounceValue(queryFood);
 
+
   //fetching data from server
   useEffect(() => {
     function fetchFoodData (query) {

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import SidebarItem from "./SidebarItem";
 import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
+
 import { useAuth0 } from "@auth0/auth0-react";
 
 import {
@@ -13,6 +15,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import MonitorWeightIcon from "@mui/icons-material/MonitorWeight";
+import Logo from "../HomePage/Logo";
 
 export default function Sidebar(props) {
   const { drawerWidth, setShowPage } = props;
@@ -46,7 +50,7 @@ export default function Sidebar(props) {
           sx={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: { xs: "space-between", md: "flex-end" },
+            justifyContent: { xs: "space-between", md: "space-between" },
             // backgroundColor:"white"
           }}
         >
@@ -59,6 +63,7 @@ export default function Sidebar(props) {
           >
             <MenuIcon />
           </IconButton>
+          <Logo/>
           <IconButton
             size="large"
             aria-label="account of current user"
@@ -92,6 +97,7 @@ export default function Sidebar(props) {
             },
           }}
         >
+          <Toolbar />
           <Button>
             <Avatar src={user.picture} alt="temp iamge"/>
           </Button>
@@ -116,6 +122,7 @@ export default function Sidebar(props) {
           open
         >
           <Box>
+          <Toolbar />
             <Button>
               <Avatar src={user.picture} alt="temp iamge"/>
             </Button>
@@ -123,7 +130,13 @@ export default function Sidebar(props) {
               setShowPage={setShowPage}
             />
           </Box>
-          <Button onClick={handleLogout}>Logout</Button>
+          <Box
+            sx={{
+              margin: "2em auto"
+            }}
+          >
+            <Button onClick={handleLogout}>Logout</Button>
+          </Box>
         </Drawer>
       </Box>
     </>
