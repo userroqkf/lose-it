@@ -1,6 +1,6 @@
-import AdbIcon from '@mui/icons-material/Adb';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography'
+import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 
 export default function Logo() {
   return (
@@ -11,12 +11,12 @@ export default function Logo() {
       alignItems={"center"}
 
     >
-      <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, color: "#0066EE", mr: 1 }} />
+      <MonitorWeightIcon sx={{ display: 'flex', color: "#0066EE", mr: 1 }} />
       <Typography
         variant="h6"
         sx={{
           mr: 2,
-          display: { xs: 'none', md: 'flex' },
+          display:'flex',
           fontFamily: 'monospace',
           fontWeight: 700,
           letterSpacing: '.3rem',

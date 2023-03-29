@@ -41,7 +41,8 @@ export default function MacroChart(props) {
     maintainAspectRatio: false,
     animation: true,
     cutout: "65%",
-    remaining
+    remaining,
+    macroName
   }
 
   const plugins = [{
@@ -53,7 +54,7 @@ export default function MacroChart(props) {
     // ctx.textBaseline = "top";
     const text = `Remaining:`;
     const text2 = chart.config.options.remaining
-    const text3 = `kcal`
+    const text3 = chart.config.options.macroName === 'calories' ? 'kcal' : 'g'
     const textX = Math.round((width - ctx.measureText(text).width) / 2);
     const textX2 = Math.round((width - ctx.measureText(text2).width) / 2);
     const textX3 = Math.round((width - ctx.measureText(text3).width) / 2);

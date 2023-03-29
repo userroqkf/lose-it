@@ -99,8 +99,8 @@ const addWeight = async(userId, weight, date) => {
     VALUES ($1, $2, $3)
     RETURNING *;
   `;
-  const { result } = await pool.query(query, [userId, weight, date]);
-  return result;
+  const { rows } = await pool.query(query, [userId, weight, date]);
+  return rows;
 };
 
 const deleteWeight = async(userId, date) => {
@@ -109,8 +109,8 @@ const deleteWeight = async(userId, date) => {
     WHERE owner_id = $1 AND date = $2;
   `;
   console.log(query);
-  const { result } = await pool.query(query, [userId, date]);
-  return result;
+  const { rows } = await pool.query(query, [userId, date]);
+  return rows;
 };
 
 const addFood = async(userId, foodData, date) => {
@@ -119,7 +119,7 @@ const addFood = async(userId, foodData, date) => {
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING *;
   `;
-  const {result} = await pool.query(query, [
+  const {rows} = await pool.query(query, [
     userId,
     foodData.foodId,
     foodData.brand,
@@ -133,7 +133,7 @@ const addFood = async(userId, foodData, date) => {
     foodData.servingSize,
     date
   ]);
-  return result;
+  return rows;
 };
 
 const deleteFood = async(userId, foodId, inputDate) => {
@@ -143,9 +143,51 @@ const deleteFood = async(userId, foodId, inputDate) => {
   `;
   console.log("input data", userId, foodId, inputDate);
   console.log(typeof userId, typeof foodId, typeof inputDate);
-  const {result} = await pool.query(query, [userId, foodId,inputDate]);
-  return result;
+  const {rows} = await pool.query(query, [userId, foodId,inputDate]);
+  return rows;
 };
+
+const getMacroData = async(userId) => {
+  console.log("getmacrodata", userId);
+  const query = `
+    SELECT * FROM macros
+    WHERE owner_id = $1;
+  `;
+  const {rows} = await pool.query(query, [userId]);
+  console.log(rows);
+  return rows;
+};
+
+const updateMacroData = async(userId, macroData) => {
+  const {protein, fat, carb, calories} = macroData;
+  const query = `
+    INSERT INTO macros(owner_id, protein, carb, fat, calories)
+    VALUES ($1, $2, $3, $4, $5)
+    ON CONFLICT (owner_id)
+    DO UPDATE SET protein = $2, carb = $3, fat = $4, calories = $5;
+  `;
+  const {rows} = await pool.query(query, [userId, protein, fat, carb, calories]);
+  return rows;
+};
+
+app.get("/api/users/:userId/macro", async(req,res) => {
+  const userId = req.params.userId;
+  console.log("macro",userId);
+  await getMacroData(userId)
+    .then(macro => {
+      return res.json(macro);
+    }
+    )
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({error: 'Internal server error'});
+    });
+});
+
+app.post("/api/users/:userId/macro", async(req,res) => {
+  const userId = req.params.userId;
+  await updateMacroData(userId, req.body);
+});
 
 app.get("/api/users/:userId/weight", async(req, res) => {
   const userId = req.params.userId;
@@ -163,18 +205,18 @@ app.post("/api/users/:userId/weight", async(req, res) => {
   const date = req.body.inputDate;
   console.log("weight date", date);
 
-  const { result } = await addWeight(userId, weight, date)
+  const { rows } = await addWeight(userId, weight, date)
     .then(weight => res.json(weight));
-  return result;
+  return rows;
 });
 
 app.post("/api/users/:userId/weight/delete", async(req, res) => {
   console.log("here");
   const userId = req.params.userId;
   const date = req.body.inputDate;
-  const {result} = await deleteWeight(userId, date)
+  const {rows} = await deleteWeight(userId, date)
     .then(weight => res.json(weight));
-  return result;
+  return rows;
 });
 
 app.get("/api/users/:userId/food", async(req, res) => {
@@ -227,3 +269,5 @@ app.get("/search_food", async(req, res) => {
 app.listen(8000, () => {
   console.log(`Server is running on port 8000.`);
 });
+
+

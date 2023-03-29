@@ -15,9 +15,12 @@ import HomePage from "./components/HomePage/HomePage";
 import { PageLoader } from "./components/PageLoader";
 import dayjs from "dayjs";
 import { Box } from "@mui/material";
+import MacroPage from "./components/MacroPage/MacroPage";
 
 
 function App() {
+  const apiServerUrl = process.env.REACT_APP_API_SERVER_URL
+  const { getAccessTokenSilently, isLoading, isAuthenticated, user} = useAuth0();
   
   const [fixedData, setFixedData] = useState([]);
   const [weightData, setWeightData] = useState([]);
@@ -37,10 +40,10 @@ function App() {
 
   //MacroChart Data (update whenever fixedData changes)
   const [macroData, setMacroData] = useState({
-    protein: 140,
-    carb: 123,
-    fat: 76,
-    calories: 1700
+    protein: 150,
+    carb: 320,
+    fat: 70,
+    calories: 2425
   })
 
   const [fixedFoodData, setFixedFoodData] = useState({});
@@ -50,21 +53,18 @@ function App() {
   const [foodMacroSum, setFoodMacroSum] = useState({carb: 0, protein: 0, fat: 0, calories:0})
   const [remainingMacro, setRemainingMacro] = useState([macroData, foodMacroSum]);
 
-  const apiServerUrl = process.env.REACT_APP_API_SERVER_URL
-  console.log("api url", apiServerUrl);
-  const { getAccessTokenSilently, isLoading, isAuthenticated, user} = useAuth0();
-
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
+      console.log("user data");
       setUserData({...user, sub: user.sub.split('|')[1]})
     }
   }, [isLoading,user, isAuthenticated])
 
   useEffect(() => {
     const getFoodData = async () => {
-      const accessToken = await getAccessTokenSilently();
+      const accessToken = await getAccessTokenSilently()
       console.log("access tokeb", accessToken);
       fetch(`${apiServerUrl}/api/users/${userData.sub}/food`, {
         headers: {
@@ -77,21 +77,15 @@ function App() {
           setFixedFoodData(data);
         })
     }
-    // if (!isLoading) getFoodData()
-
-    // fetch(`${apiServerUrl}/api/users/${1}/food`)
-    // .then(res => res.json())
-    // .then(data => {
-    // setFixedFoodData(data);
-    // })
-    getFoodData()
+    if (Object.keys(userData).length !== 0) {
+      getFoodData();  
+    }
   }, [apiServerUrl, getAccessTokenSilently, isLoading, userData])
 
   //fetching weight data for user
   useEffect(() => {
     const getWeightData = async () => {
-      const accessToken = await getAccessTokenSilently();
-      console.log(accessToken);
+      const accessToken = await getAccessTokenSilently()
       fetch(`${apiServerUrl}/api/users/${userData.sub}/weight`, {
         headers: {
           'Content-Type': 'application/json',
@@ -109,21 +103,11 @@ function App() {
         });
         setFixedData(sortedWeights)})
     }
-    getWeightData();
+    if (Object.keys(userData).length !== 0) {
+      getWeightData();  
+    }
 
-    // fetch(`${apiServerUrl}/api/users/${1}/weight`)
-    // .then(res => res.json())
-    // .then(data => {
-    // const weights = data.map(row => ({
-    // x: new Date(row.x),
-    // y: row.y
-    // }));
-    // const sortedWeights = weights.sort((a, b) => {
-    // return new Date(b.x) - new Date(a.x);
-    // });
-    // setFixedData(sortedWeights)})
-
-  }, [apiServerUrl, getAccessTokenSilently, userData, isLoading]);
+  }, [apiServerUrl, getAccessTokenSilently, userData]);
 
   useEffect(() => {
     const datePicked = datePicker['$d']
@@ -161,6 +145,28 @@ function App() {
     setRemainingMacro([macroData, foodMacroSum])
   }, [macroData, foodMacroSum])
 
+  useEffect(() => {
+    const getMacroData = async() => {
+      const accessToken = await getAccessTokenSilently()
+      fetch(`${apiServerUrl}/api/users/${userData.sub}/macro`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `bearer ${accessToken}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.length) {
+            setMacroData(data[0])
+          }
+        })
+    }
+    if (Object.keys(userData).length !== 0) {
+      getMacroData();  
+    }
+  }, [apiServerUrl, userData, getAccessTokenSilently])
+
+
   const drawerWidth = 240;
 
   if (isLoading) {
@@ -184,6 +190,16 @@ function App() {
     <Routes>
       <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" />:<HomePage/>}/>
       <Route path="/*" element={isAuthenticated ? <Navigate to="/dashboard" />: <Navigate to="/" />}/>
+      <Route path="/macro" element={
+        <MacroPage 
+          macroData={macroData} 
+          setMacroData={setMacroData}
+          apiServerUrl={apiServerUrl}
+          getAccessTokenSilently={getAccessTokenSilently}
+          user={userData}
+
+        />
+      }/>
       <Route path="/dashboard" element={
         <Dashboard
           value={value}
