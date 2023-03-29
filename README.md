@@ -5,6 +5,9 @@ LoseIt is an application that aims to assist individuals in adopting a healthier
 
 ## Sample Images
 
+<img src="https://user-images.githubusercontent.com/96427720/228497106-ea473d71-0688-4ef8-a4c3-b45f7ae61f56.mp4" width="100%"/>
+
+
 ### Desktop View
 | Start Page | Login Page | Dashboard |
 |:---:|:---:|:---:|
