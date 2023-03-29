@@ -10,9 +10,9 @@ export default function IntroText() {
         variant="h1"
         sx={{
           mr: 2,
-          display: { xs: 'none', md: 'flex' },
+          display: "flex",
           fontFamily: 'Helvetica',
-          fontSize:"4em",
+          fontSize:"4rem",
           letterSpacing: '.3rem',
           fontWeight: 900,
           color: 'inherit',
@@ -26,7 +26,7 @@ export default function IntroText() {
         sx={{
           mr: 2,
           fontFamily: 'sans-serif',
-          fontSize:"1em",
+          fontSize:"1rem",
           letterSpacing: '.3rem',
           fontWeight: 400,
           color: 'inherit',
