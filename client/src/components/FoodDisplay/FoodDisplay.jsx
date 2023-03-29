@@ -76,7 +76,7 @@ const FoodDisplay = (props) => {
       ignore= true;
       setShowQueryData(false);
     }
-  }, [debounceQuery, apiServerUrl])
+  }, [debounceQuery, apiServerUrl, getAccessTokenSilently])
 
 
   //handle open and close for alerts
