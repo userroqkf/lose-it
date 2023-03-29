@@ -18,9 +18,6 @@ export const Auth0ProviderWithNavigate = ({ children }) => {
     return null;
   }
 
-
-  console.log(domain, clientId, redirectUri, "REACT_APP_AUTH0_AUDIENCE",audience);
-
   return (
     <Auth0Provider
       domain={domain}

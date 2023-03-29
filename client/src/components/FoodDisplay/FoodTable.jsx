@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export default function FoodTable(props) {
 
   const {foodMacro, setFoodMacro, setShowAlert,setFixedFoodData, fixedFoodData, 
-    datePickerString, apiServerUrl, user} = props;
+    datePickerString, apiServerUrl, user, getAccessTokenSilently} = props;
 
 
   const columns = [
@@ -27,38 +27,41 @@ export default function FoodTable(props) {
         <GridActionsCellItem
           icon={<DeleteIcon />}
           label="Delete"
-          onClick={() => deleteItem(params.id)}
+          onClick={() => deleteItem(params.id, params.row.foodId)}
         />,
       ],
     },
   ]
 
   const deleteItem = useCallback(
-    (id) => {
-      const deleteFoodData = (id, date) => {
+    (rowId, foodId) => {
+      const deleteFoodData = async (id, date) => {
+        const accessToken = await getAccessTokenSilently()
         fetch(`${apiServerUrl}/api/users/${user.sub}/food/delete`, {
           method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${accessToken}`,
           },
-          body: JSON.stringify({foodId: id, inputDate: date})
+          body: JSON.stringify({foodId: foodId, inputDate: date})
         })
       }
 
       setTimeout(async() => {
-        await deleteFoodData(id, datePickerString);
-        setFoodMacro((prevRows) => prevRows.filter((row) => row.id !== id));
+        await deleteFoodData(foodId, datePickerString);
+        setFoodMacro((prevRows) => prevRows.filter((row) => row.id !== rowId));
         setShowAlert((prev) => { return {...prev, message:"Deleted Item", open: true}})
 
         const filteredData = fixedFoodData[datePickerString].filter((row, index) => {
-          return row.id !== id
+          return row.id !== rowId
         })
         setFixedFoodData(prev => {
           return {...prev, [datePickerString]: filteredData}
         })
       });
     },
-    [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, datePickerString, apiServerUrl, user]
+    [setFoodMacro, setShowAlert, setFixedFoodData, fixedFoodData, 
+      datePickerString, apiServerUrl, user, getAccessTokenSilently]
   );
 
   return (

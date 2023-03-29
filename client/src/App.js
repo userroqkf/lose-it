@@ -57,7 +57,6 @@ function App() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      console.log("user data");
       setUserData({...user, sub: user.sub.split('|')[1]})
     }
   }, [isLoading,user, isAuthenticated])
@@ -65,7 +64,6 @@ function App() {
   useEffect(() => {
     const getFoodData = async () => {
       const accessToken = await getAccessTokenSilently()
-      console.log("access tokeb", accessToken);
       fetch(`${apiServerUrl}/api/users/${userData.sub}/food`, {
         headers: {
           'Content-Type': 'application/json',
@@ -229,6 +227,7 @@ function App() {
           setDateSelected={setDateSelected}
           user={userData}
           apiServerUrl={apiServerUrl}
+          getAccessTokenSilently={getAccessTokenSilently}
       />
     } />
       <Route path="/food" element={
@@ -245,6 +244,7 @@ function App() {
           datePickerString={datePickerString}
           apiServerUrl={apiServerUrl}
           user={userData}
+          getAccessTokenSilently={getAccessTokenSilently}
       />
         } />
     </Routes>

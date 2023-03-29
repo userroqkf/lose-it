@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 export default function QueryTable(props) {
 
   const { queryFoodData, setFoodMacro, foodMacro, 
-    setShowAlert, setFixedFoodData, datePickerString, apiServerUrl, user} = props;
+    setShowAlert, setFixedFoodData, datePickerString, apiServerUrl, user, getAccessTokenSilently} = props;
 
   const [gridData, setGridData] = useState([]);
 
@@ -74,7 +74,6 @@ export default function QueryTable(props) {
             protein: newRow.protein * newRow.servingSize,
             calories: newRow.calories * newRow.servingSize,
           }
-          console.log("updated row", updatedRow);
           const updateRow = {...updatedRow, isNew:true}
   
           return updateRow;
@@ -89,10 +88,12 @@ export default function QueryTable(props) {
     (params) => {
 
       const addFoodData = async(data, date) => {
+        const accessToken = await getAccessTokenSilently()
         fetch(`${apiServerUrl}/api/users/${user.sub}/food/`, {
           method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${accessToken}`,
           },
           body: JSON.stringify({foodData: data, date, userId: "userId"})
         })
@@ -102,7 +103,6 @@ export default function QueryTable(props) {
         if (!(params.row.servingSize > 0)) {
           setShowAlert((prev) => { return {...prev, message:"Please Specify Serving Size", open: true}})
         }else if (!foodMacro.some(obj => obj.foodId === params.id)) {
-          console.log(params.row)
           await addFoodData(params.row, datePickerString)
           setFoodMacro(prev => [...prev, params.row])
           setFixedFoodData(prev => {
@@ -118,7 +118,8 @@ export default function QueryTable(props) {
         }
       });
     },
-    [setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData, apiServerUrl, user],
+    [setFoodMacro, setShowAlert, foodMacro, datePickerString, setFixedFoodData, 
+      apiServerUrl, user, getAccessTokenSilently],
   );
 
   const columns = [

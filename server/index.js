@@ -12,13 +12,11 @@ const audience = process.env.AUDIENCE;
 const issuerBaseURL = process.env.ISSUERBASEURL;
 const tokenSigningAlg = process.env.TOKENSIGNINGALG;
 
-console.log("audience issuebaseurl, tokensigningalg",audience, issuerBaseURL, tokenSigningAlg);
-
-// const jwtCheck = auth({
-//   audience: audience,
-//   issuerBaseURL: issuerBaseURL,
-//   tokenSigningAlg: tokenSigningAlg
-// });
+const jwtCheck = auth({
+  audience: audience,
+  issuerBaseURL: issuerBaseURL,
+  tokenSigningAlg: tokenSigningAlg
+});
 
 // const jwtCheck = auth({
 //   audience: 'https://lose-it.api.com',
@@ -30,7 +28,7 @@ console.log("audience issuebaseurl, tokensigningalg",audience, issuerBaseURL, to
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-// app.use(jwtCheck);
+app.use(jwtCheck);
 
 const pool = new Pool({
   host: 'localhost',
@@ -47,7 +45,7 @@ const getFood = async(userId) => {
   // Define the SQL query to fetch the food data
   const query = `
     SELECT 
-    date,
+    to_char(date, 'YYYY-MM-DD') AS date,
     ARRAY_AGG
     (
       json_build_object(
@@ -76,8 +74,7 @@ const getFood = async(userId) => {
 const cleanFoodData = (data) => {
   const cleanedData = {};
   data.forEach((val, index) => {
-    const cleanedDate = val.date. toLocaleDateString();
-    cleanedData[cleanedDate] = val.food_data;
+    cleanedData[val.date] = val.food_data;
   });
   return cleanedData;
 };
@@ -108,7 +105,6 @@ const deleteWeight = async(userId, date) => {
     DELETE FROM weights
     WHERE owner_id = $1 AND date = $2;
   `;
-  console.log(query);
   const { rows } = await pool.query(query, [userId, date]);
   return rows;
 };
@@ -141,20 +137,16 @@ const deleteFood = async(userId, foodId, inputDate) => {
     DELETE FROM foods
     WHERE owner_id = $1 AND food_id = $2 AND date = $3;
   `;
-  console.log("input data", userId, foodId, inputDate);
-  console.log(typeof userId, typeof foodId, typeof inputDate);
   const {rows} = await pool.query(query, [userId, foodId,inputDate]);
   return rows;
 };
 
 const getMacroData = async(userId) => {
-  console.log("getmacrodata", userId);
   const query = `
     SELECT * FROM macros
     WHERE owner_id = $1;
   `;
   const {rows} = await pool.query(query, [userId]);
-  console.log(rows);
   return rows;
 };
 
@@ -172,7 +164,6 @@ const updateMacroData = async(userId, macroData) => {
 
 app.get("/api/users/:userId/macro", async(req,res) => {
   const userId = req.params.userId;
-  console.log("macro",userId);
   await getMacroData(userId)
     .then(macro => {
       return res.json(macro);
@@ -203,7 +194,6 @@ app.post("/api/users/:userId/weight", async(req, res) => {
   const userId = req.params.userId;
   const weight = req.body.inputWeight;
   const date = req.body.inputDate;
-  console.log("weight date", date);
 
   const { rows } = await addWeight(userId, weight, date)
     .then(weight => res.json(weight));
@@ -211,7 +201,6 @@ app.post("/api/users/:userId/weight", async(req, res) => {
 });
 
 app.post("/api/users/:userId/weight/delete", async(req, res) => {
-  console.log("here");
   const userId = req.params.userId;
   const date = req.body.inputDate;
   const {rows} = await deleteWeight(userId, date)
@@ -252,7 +241,6 @@ app.post("/api/users/:userId/food/delete", async(req, res) => {
 
 app.get("/search_food", async(req, res) => {
   const query = req.query.food;
-  console.log(query);
   fetch(`https://api.nal.usda.gov/fdc/v1/foods/search/?api_key=${API_KEY}&query=${query}`)
     .then(res =>{
       if (res.ok) {
@@ -261,7 +249,6 @@ app.get("/search_food", async(req, res) => {
       throw new Error('Something went wrong');
     })
     .then(data => {
-      console.log("here 1");
       return res.send(data);
     });
 });

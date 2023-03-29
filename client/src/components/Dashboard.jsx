@@ -13,8 +13,7 @@ import { PageLoader } from "./PageLoader";
 
 const  Dashboard = (props) =>  {
   const {value, weightData, setWeightData, fixedData, drawerWidth, datePicker, 
-    setDatePicker,setValue, dateSelected, setDateSelected, setShowPage, 
-    foodMacroSum,remainingMacro
+    setDatePicker,setValue, dateSelected, setDateSelected, foodMacroSum,remainingMacro
   } = props;
   return (
     <PageLayout>

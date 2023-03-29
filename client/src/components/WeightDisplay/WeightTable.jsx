@@ -4,7 +4,7 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function WeightTable(props) {
-  const { weightData, setFixedData, apiServerUrl, user } = props;
+  const { weightData, setFixedData, apiServerUrl, user, getAccessTokenSilently } = props;
 
   function getRowById(rowId) {
     return gridData.filter((data) => data.id === rowId);
@@ -12,14 +12,14 @@ export default function WeightTable(props) {
 
   //Delete data from database
   const deleteWeightData  = async(date) => {
-    console.log("date", date, date.toLocaleDateString());
     const [day, month, year] = date.toLocaleDateString().split('/')
     const inputDateCleaned = `${year}-${month}-${day}`
-    console.log(inputDateCleaned);
+    const accessToken = await getAccessTokenSilently()
     const res = await fetch(`${apiServerUrl}/api/users/${user.sub}/weight/delete`, {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${accessToken}`,
       },
       body: JSON.stringify({inputDate: inputDateCleaned})
     });
@@ -28,7 +28,6 @@ export default function WeightTable(props) {
 
   // When Delete Icon is pressed in DataGrid, filter data from fixed Data => trigger rerender for chart as well
   const deleteData = async(rowId) => {
-    console.log(rowId)
     const rowData = getRowById(rowId);
     const [day, month, year] = rowData[0].date.split('/');
     const rowDataDate = new Date(year, month - 1, day);
