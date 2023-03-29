@@ -2,7 +2,6 @@
 LoseIt is an application that aims to assist individuals in adopting a healthier lifestyle by tracking their daily caloric intake, macronutrients, and weight. By keeping track of their food intake, users can gain insight into their eating habits and make informed decisions about their diet.
 
 ## Quick Demo
-![name](https://user-images.githubusercontent.com/1702215/158075475-c23004ab-827a-45ad-bdba-aee29ac5b582.mp4)
 
 ## Sample Images
 
