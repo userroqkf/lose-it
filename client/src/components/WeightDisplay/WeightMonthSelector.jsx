@@ -18,7 +18,6 @@ export default function WeightMonthSelector(props) {
   const {setValue, dateSelected, setDateSelected} = props;
 
   useEffect(() => {
-    console.log("dateSelected");
     setValue(dateSelected["$d"])
   }, [dateSelected, setValue])
 
@@ -26,7 +25,6 @@ export default function WeightMonthSelector(props) {
   const changeDate = (e, value) => {
     if (value === "add") {
       setDateSelected((date) => {
-        console.log("clicked");
         const updatedDate = date.add(1, "month")
         return updatedDate;
       });
@@ -64,10 +62,7 @@ export default function WeightMonthSelector(props) {
             value={dateSelected}
             selected={dateSelected}
             onChange={(newValue) => {
-              // setValue(newValue["$d"]);
-              console.log("new value on change", newValue)
               setDateSelected(newValue)
-              // setValue(newValue["$d"])
             }}
             renderInput={(params) => (
               <TextField {...params} helperText={null} />

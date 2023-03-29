@@ -6,7 +6,6 @@ export default function MacroForm(props) {
   const {macroData, apiServerUrl, user, setMacroData, getAccessTokenSilently} = props;
 
   const [macroInput, setMacroInput] = useState(macroData);
-  console.log(macroData);
   const [invalidInput, setInvalidInput] = useState({
     protein: false,
     carb: false,

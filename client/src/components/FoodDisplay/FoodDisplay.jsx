@@ -13,11 +13,6 @@ import { PageLayout } from "../PageLayout/PageLayout";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { PageLoader } from "../PageLoader";
 
-// const searchFoodData = (food) => {
-//   fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?api_key=DEMO_KEY&query=${food}`)
-//   .then(res => res.json())
-//   .then(res => console.log(res.foods))
-// }
 function useDebounceValue(value, time=1000) {
   const [debounceValue, setDebounceValue] = useState(value);
   
@@ -38,7 +33,7 @@ const FoodDisplay = (props) => {
 
   const { drawerWidth, datePicker, setDatePicker, foodMacroSum, foodMacro, 
     setFoodMacro, remainingMacro, setFixedFoodData, fixedFoodData, 
-    datePickerString,apiServerUrl, user } = props;
+    datePickerString,apiServerUrl, user, getAccessTokenSilently } = props;
   // date picker for foodDisplay
   
   const [ queryFood, setQueryFood ] = useState("");
@@ -55,8 +50,14 @@ const FoodDisplay = (props) => {
 
   //fetching data from server
   useEffect(() => {
-    function fetchFoodData (query) {
-      return fetch(`${apiServerUrl}/search_food?food=${query}`)
+    async function fetchFoodData (query) {
+      const accessToken = await getAccessTokenSilently()
+      return fetch(`${apiServerUrl}/search_food?food=${query}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `bearer ${accessToken}`,
+        },
+      })
       .then(res => res.json())
       .then(data => data.foods)
     }
@@ -158,6 +159,7 @@ const FoodDisplay = (props) => {
               datePickerString={datePickerString}
               apiServerUrl={apiServerUrl}
               user={user}
+              getAccessTokenSilently={getAccessTokenSilently}
               
               /> : 
               <FoodTable
@@ -169,6 +171,7 @@ const FoodDisplay = (props) => {
                 datePickerString={datePickerString} 
                 apiServerUrl={apiServerUrl}
                 user={user}
+                getAccessTokenSilently={getAccessTokenSilently}
               />
             }
           </Box>

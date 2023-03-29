@@ -1,7 +1,6 @@
 import { useState } from "react";
 import SidebarItem from "./SidebarItem";
 import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -14,8 +13,6 @@ import {
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import MonitorWeightIcon from "@mui/icons-material/MonitorWeight";
 import Logo from "../HomePage/Logo";
 
 export default function Sidebar(props) {

@@ -12,7 +12,6 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DataUsageIcon from '@mui/icons-material/DataUsage';
 
 export default function SidebarItem(props) {
-  const { setShowPage } = props;
 
   return (
     <List>

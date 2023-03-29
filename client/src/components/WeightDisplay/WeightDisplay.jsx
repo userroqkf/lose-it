@@ -12,7 +12,7 @@ import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { PageLoader } from "../PageLoader";
 
 const WeightDisplay = (props) => {
-    const {value, setValue, weightData, setWeightData, fixedData, 
+    const {value, setValue, weightData, setWeightData, fixedData, getAccessTokenSilently, 
       setFixedData, dateSelected, setDateSelected, apiServerUrl, user} = props;
 
     return (
@@ -34,6 +34,7 @@ const WeightDisplay = (props) => {
             weightData={weightData} 
             apiServerUrl={apiServerUrl}
             user={user}
+            getAccessTokenSilently={getAccessTokenSilently}
           />
           <WeightChart
             value={value}
@@ -46,6 +47,7 @@ const WeightDisplay = (props) => {
           setFixedData={setFixedData}
           apiServerUrl={apiServerUrl}
           user={user}
+          getAccessTokenSilently={getAccessTokenSilently}
           />
         </Box>
       </PageLayout>
